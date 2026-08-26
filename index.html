@@ -1,0 +1,2530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>不背文言 · 完整版（含收藏与刷题）</title>
+ <style>
+  /* ===== 样式（完整保留） ===== */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+      --primary: #1a3c4a; --primary-light: #2a5a6e; --primary-dark: #0e2832;
+      --accent: #c9a86c; --accent-light: #e8d5b0;
+      --bg: #f4f1ea; --card: #ffffff;
+      --text: #1e2a36; --text-light: #5a6a7a;
+      --shadow: 0 8px 30px rgba(0,0,0,0.10);
+      --radius: 16px; --radius-sm: 10px;
+      --transition: 0.25s ease;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-size-base: 16px;
+      --highlight-bg: #fdebd0; --highlight-border: #d48c6b;
+  }
+  body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      font-size: var(--font-size-base);
+      transition: background 0.3s, color 0.3s, font-size 0.2s;
+  }
+  #app {
+      width: 100%;
+      max-width: 1000px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px 30px 36px;
+      position: relative;
+      min-height: 560px;
+      transition: all var(--transition);
+  }
+  .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid #f0ede8;
+      flex-wrap: wrap;
+      gap: 8px;
+  }
+  .app-header h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: 0.5px; color: var(--primary); }
+  .app-header h1 span { color: var(--accent); }
+  .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+  }
+  .settings-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      transition: background 0.2s;
+      color: var(--text-light);
+  }
+  .settings-btn:hover { background: var(--bg); }
+  .back-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text-light);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+  }
+  .back-btn:hover { background: #f0ede8; color: var(--text); }
+  
+  .page { display: none; animation: fadeUp 0.3s ease; }
+  .page.active { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  
+  .home-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 18px;
+      margin-top: 6px;
+  }
+  .home-card {
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      padding: 22px 26px;
+      cursor: pointer;
+      transition: all var(--transition);
+      border: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+  }
+  .home-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+  .home-card .icon { font-size: 2rem; width: 52px; height: 52px; background: var(--card); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .home-card .info h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 3px; }
+  .home-card .info p { font-size: 0.875rem; color: var(--text-light); line-height: 1.4; }
+  .home-card .badge { margin-left: auto; background: var(--accent); color: #fff; font-size: 0.75rem; font-weight: 600; padding: 4px 14px; border-radius: 30px; white-space: nowrap; }
+  .home-card .badge.gray { background: #ccc; }
+  
+  .list-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0 18px; }
+  .list-item { background: var(--bg); border-radius: var(--radius-sm); padding: 14px 18px; cursor: pointer; transition: all var(--transition); border: 2px solid transparent; font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; }
+  .list-item:hover { border-color: var(--accent-light); }
+  .list-item.selected { border-color: var(--accent); background: #faf6ee; }
+  .list-item .status-tag { font-size: 0.75rem; padding: 2px 12px; border-radius: 30px; font-weight: 400; }
+  .status-tag.new { background: #e8e4de; color: #5a6a7a; }
+  .status-tag.learning { background: #fdebd0; color: #a04000; }
+  .status-tag.mastered { background: #d5f5e3; color: #1a7a42; }
+  
+  .mode-select { display: flex; gap: 10px; margin: 16px 0 22px; flex-wrap: wrap; }
+  .mode-btn { flex: 1; min-width: 100px; padding: 14px 10px; border: 2px solid #e0dbd2; border-radius: var(--radius-sm); background: #fff; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all var(--transition); text-align: center; color: var(--text-light); }
+  .mode-btn:hover { border-color: var(--accent-light); color: var(--text); }
+  .mode-btn.active { border-color: var(--accent); background: #faf6ee; color: var(--primary); }
+  .mode-btn .sub { display: block; font-size: 0.75rem; font-weight: 400; color: var(--text-light); margin-top: 3px; }
+  
+  .question-area { margin: 12px 0 20px; }
+  .progress { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light); }
+  .progress-bar { flex: 1; height: 5px; background: #e8e4de; border-radius: 10px; overflow: hidden; }
+  .progress-bar .fill { height: 100%; background: var(--accent); border-radius: 10px; transition: width 0.3s ease; width: 0%; }
+  .question-text { font-size: 1.25rem; line-height: 1.8; padding: 20px 24px; background: var(--bg); border-radius: var(--radius-sm); margin-bottom: 18px; letter-spacing: 0.3px; }
+  .question-hint { font-size: 0.9rem; color: var(--text-light); margin-bottom: 14px; }
+  .fill-input-group { display: flex; gap: 12px; flex-wrap: wrap; margin: 6px 0 10px; }
+  .fill-input-group input { flex: 1; min-width: 200px; padding: 12px 18px; border: 2px solid #e0dbd2; border-radius: var(--radius-sm); font-size: 1rem; outline: none; transition: all var(--transition); background: #fff; }
+  .fill-input-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(201,168,108,0.15); }
+  .fill-input-group input:disabled { background: #f5f3ef; color: var(--text-light); }
+  
+  .btn { padding: 12px 28px; border: none; border-radius: var(--radius-sm); font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all var(--transition); background: var(--primary); color: #fff; }
+  .btn:hover { background: var(--primary-light); transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn-accent { background: var(--accent); }
+  .btn-accent:hover { background: #b8945a; }
+  .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+  .btn-outline:hover { background: var(--primary); color: #fff; }
+  .btn-success { background: #27ae60; }
+  .btn-success:hover { background: #219a52; }
+  .btn-danger { background: #e74c3c; }
+  .btn-danger:hover { background: #c0392b; }
+  .btn-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+  
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 10px 0 14px; }
+  .option-btn { padding: 14px 16px; border: 2px solid #e0dbd2; border-radius: var(--radius-sm); background: #fff; font-size: 0.95rem; cursor: pointer; transition: all var(--transition); text-align: left; font-weight: 500; }
+  .option-btn:hover:not(.disabled) { border-color: var(--accent-light); background: #faf8f4; }
+  .option-btn.correct { border-color: #27ae60; background: #eafaf1; color: #1e7e34; }
+  .option-btn.wrong { border-color: #e74c3c; background: #fdedec; color: #a93226; }
+  .option-btn.disabled { cursor: default; opacity: 0.7; }
+  .option-btn .tag { display: inline-block; width: 24px; height: 24px; border-radius: 50%; background: var(--bg); text-align: center; line-height: 24px; font-size: 0.8rem; font-weight: 600; margin-right: 10px; color: var(--text-light); }
+  
+  .feedback { padding: 16px 20px; border-radius: var(--radius-sm); margin: 14px 0 10px; font-size: 0.95rem; display: none; align-items: flex-start; gap: 12px; line-height: 1.6; }
+  .feedback.show { display: flex; }
+  .feedback.success { background: #eafaf1; border-left: 4px solid #27ae60; }
+  .feedback.error { background: #fdedec; border-left: 4px solid #e74c3c; }
+  .feedback.info { background: #f4f1ea; border-left: 4px solid var(--accent); }
+  .feedback .fb-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+  
+  .check-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0 18px; }
+  .check-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg); border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition); border: 2px solid transparent; font-weight: 500; font-size: 0.95rem; }
+  .check-item:hover { border-color: var(--accent-light); }
+  .check-item.checked { border-color: var(--accent); background: #faf6ee; }
+  .check-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+  .check-item .count { margin-left: auto; font-size: 0.8rem; color: var(--text-light); background: #e8e4de; padding: 2px 12px; border-radius: 30px; }
+  
+  /* 笔记模式 */
+  .note-container { display: flex; flex-direction: column; gap: 8px; margin: 10px 0 20px; max-height: 500px; overflow-y: auto; padding-right: 6px; }
+  .note-sentence { background: var(--bg); border-radius: var(--radius-sm); padding: 14px 18px; cursor: pointer; transition: all 0.2s; border-left: 4px solid var(--accent); }
+  .note-sentence:hover { background: var(--accent-light); }
+  .note-sentence .sentence-text { font-size: 1.1rem; line-height: 1.6; font-weight: 500; }
+  .note-sentence .sentence-text .highlight { background: var(--highlight-bg); border-bottom: 2px solid var(--highlight-border); padding: 0 4px; border-radius: 4px; font-weight: 700; }
+  .note-sentence .sentence-detail { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--accent-light); font-size: 0.95rem; color: var(--text); background: var(--card); padding: 12px 16px; border-radius: var(--radius-sm); }
+  .note-sentence.open .sentence-detail { display: block; }
+  .note-sentence .sentence-detail .meaning-item { display: flex; gap: 12px; align-items: baseline; padding: 4px 0; }
+  .note-sentence .sentence-detail .meaning-item .label { font-weight: 600; color: var(--primary); min-width: 60px; }
+  .note-sentence .sentence-detail .meaning-item .value { color: var(--text); }
+  
+  .note-card { background: var(--bg); border-radius: var(--radius-sm); padding: 18px 22px; border-left: 6px solid var(--accent); transition: all var(--transition); }
+  .note-card .note-title { font-weight: 700; font-size: 1.2rem; margin-bottom: 12px; color: var(--primary); }
+  .note-card .meaning-group { margin-bottom: 14px; }
+  .note-card .meaning-group .meaning-head { font-weight: 600; font-size: 1.05rem; color: var(--primary-dark); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .note-card .meaning-group .meaning-head .arrow { color: var(--accent); font-weight: 700; }
+  .note-card .meaning-group .example-list { padding-left: 20px; list-style: none; }
+  .note-card .meaning-group .example-list li { margin-bottom: 6px; line-height: 1.6; font-size: 0.95rem; }
+  .note-card .meaning-group .example-list li .highlight { background: var(--highlight-bg); border-bottom: 2px solid var(--highlight-border); padding: 0 4px; border-radius: 4px; font-weight: 600; }
+  .note-card .meaning-group .example-list li .source { font-size: 0.85rem; color: var(--text-light); margin-left: 8px; }
+  
+  /* 自定义表单 */
+  .custom-form { background: var(--bg); border-radius: var(--radius-sm); padding: 20px 24px; margin-bottom: 24px; }
+  .custom-form .form-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; align-items: center; }
+  .custom-form .form-row label { font-weight: 600; min-width: 80px; font-size: 0.9rem; color: var(--text-light); }
+  .custom-form .form-row input, .custom-form .form-row textarea { flex: 1; min-width: 150px; padding: 10px 14px; border: 2px solid #e0dbd2; border-radius: var(--radius-sm); font-size: 0.95rem; background: var(--card); font-family: inherit; }
+  .custom-form .form-row textarea { min-height: 60px; resize: vertical; }
+  .custom-form .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; flex-wrap: wrap; }
+  .custom-target-group { background: var(--card); border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 10px; border: 1px solid #e0dbd2; }
+  .custom-target-group .target-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .custom-target-group .target-row input { flex: 1; min-width: 100px; }
+  .custom-target-group .del-target-btn { background: none; border: none; color: #e74c3c; font-size: 1.2rem; cursor: pointer; padding: 0 6px; }
+  .add-target-btn { padding: 6px 16px; font-size: 0.85rem; background: transparent; border: 1px dashed var(--accent); border-radius: var(--radius-sm); cursor: pointer; color: var(--text-light); }
+  .add-target-btn:hover { background: var(--accent-light); }
+  
+  .custom-list { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; max-height: 300px; overflow-y: auto; }
+  .custom-item { background: var(--bg); border-radius: var(--radius-sm); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent); }
+  .custom-item .info { font-size: 0.9rem; }
+  .custom-item .info strong { color: var(--primary); }
+  .custom-item .del-btn { background: none; border: none; color: #e74c3c; font-size: 1.2rem; cursor: pointer; padding: 0 8px; }
+  .custom-item .del-btn:hover { transform: scale(1.2); }
+  
+  /* 收藏相关样式 */
+  .favorite-group { border: 1px solid #e0dbd2; border-radius: var(--radius-sm); margin-bottom: 12px; overflow: hidden; }
+  .favorite-group-header { background: var(--bg); padding: 12px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; transition: background 0.2s; }
+  .favorite-group-header:hover { background: var(--accent-light); }
+  .favorite-group-header .arrow { transition: transform 0.2s; }
+  .favorite-group-header .arrow.open { transform: rotate(180deg); }
+  .favorite-group-body { display: none; padding: 12px 18px; background: var(--card); }
+  .favorite-group-body.open { display: block; }
+  
+  .favorite-item { background: var(--bg); border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px; border-left: 4px solid var(--accent); position: relative; }
+  .favorite-item.graduated { background: #e8e4de; border-left-color: #999; opacity: 0.7; }
+  .favorite-item .fi-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .favorite-item .fi-question { font-size: 1rem; font-weight: 500; flex: 1; }
+  .favorite-item .fi-meta { font-size: 0.85rem; color: var(--text-light); display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .favorite-item .fi-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+  .favorite-item .fi-actions .btn-sm { padding: 4px 14px; font-size: 0.8rem; border: 1px solid #ccc; border-radius: 20px; background: var(--card); cursor: pointer; transition: all 0.2s; color: var(--text); }
+  .favorite-item .fi-actions .btn-sm:hover { background: var(--accent-light); border-color: var(--accent); }
+  .favorite-item .fi-actions .btn-sm.danger { color: #e74c3c; border-color: #e74c3c; }
+  .favorite-item .fi-actions .btn-sm.danger:hover { background: #fdedec; }
+  .favorite-item .fi-actions .star-btn { background: none; border: none; font-size: 1.4rem; cursor: pointer; padding: 0 4px; transition: transform 0.2s; color: #f1c40f; }
+  .favorite-item .fi-actions .star-btn:hover { transform: scale(1.2); }
+  .favorite-item .fi-actions .credit-badge { font-size: 0.8rem; font-weight: 600; background: var(--accent-light); padding: 2px 12px; border-radius: 30px; color: var(--primary); }
+  .favorite-item .fi-actions .graduated-tag { font-size: 0.7rem; font-weight: 600; background: #27ae60; color: #fff; padding: 2px 10px; border-radius: 30px; }
+  
+  .review-select-item { display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: var(--bg); border-radius: var(--radius-sm); margin-bottom: 6px; cursor: pointer; }
+  .review-select-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+  .review-select-item .rs-question { flex: 1; font-size: 0.95rem; }
+  .review-select-item .rs-meta { font-size: 0.8rem; color: var(--text-light); }
+  
+  .star-toggle { background: none; border: none; font-size: 2rem; cursor: pointer; transition: transform 0.2s; color: #ccc; padding: 0 8px; line-height: 1; }
+  .star-toggle.favorited { color: #f1c40f; }
+  .star-toggle:hover { transform: scale(1.2); }
+  
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 18px; }
+  .stat-card { background: var(--bg); border-radius: var(--radius-sm); padding: 16px 12px; text-align: center; }
+  .stat-card .num { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+  .stat-card .label { font-size: 0.8rem; color: var(--text-light); }
+  
+  .w-full { width: 100%; }
+  .mt-16 { margin-top: 16px; }
+  .mb-8 { margin-bottom: 8px; }
+  .empty-state { text-align: center; padding: 50px 20px; color: var(--text-light); }
+  .empty-state .big-icon { font-size: 3.2rem; margin-bottom: 14px; }
+  
+  .settings-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); z-index: 999; align-items: center; justify-content: center; }
+  .settings-overlay.open { display: flex; }
+  .settings-panel { background: var(--card); border-radius: var(--radius); padding: 28px 32px; max-width: 420px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: fadeUp 0.25s ease; }
+  .settings-panel h2 { font-size:1.4rem; margin-bottom:18px; color:var(--primary); display:flex; justify-content:space-between; align-items:center; }
+  .settings-panel h2 .close-btn { background:none; border:none; font-size:1.6rem; cursor:pointer; color:var(--text-light); padding:0 6px; }
+  .settings-panel .setting-group { margin-bottom:22px; }
+  .settings-panel .setting-group label { display:block; font-weight:600; font-size:0.9rem; margin-bottom:8px; color:var(--text-light); }
+  .settings-panel .color-options { display:flex; gap:12px; flex-wrap:wrap; }
+  .settings-panel .color-options .color-btn { width:40px; height:40px; border-radius:50%; border:3px solid transparent; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; }
+  .settings-panel .color-options .color-btn.active { border-color:var(--text); transform:scale(1.1); }
+  .settings-panel .color-options .color-btn .check { color:#fff; font-size:1.1rem; font-weight:700; text-shadow:0 1px 4px rgba(0,0,0,0.3); display:none; }
+  .settings-panel .color-options .color-btn.active .check { display:block; }
+  .settings-panel .font-options { display:flex; gap:8px; }
+  .settings-panel .font-options .font-btn { flex:1; padding:8px 12px; border:2px solid #e0dbd2; border-radius:var(--radius-sm); background:#fff; cursor:pointer; font-weight:500; transition:all 0.2s; text-align:center; font-size:0.9rem; }
+  .settings-panel .font-options .font-btn.active { border-color:var(--accent); background:var(--bg); }
+  
+  @media (max-width: 600px) {
+      #app { padding: 18px 14px 24px; }
+      .home-grid { grid-template-columns: 1fr; }
+      .list-grid { grid-template-columns: 1fr; }
+      .home-card { padding: 16px 18px; gap: 12px; }
+      .home-card .icon { width: 44px; height: 44px; font-size: 1.6rem; }
+      .options-grid { grid-template-columns: 1fr; }
+      .check-list { grid-template-columns: 1fr; }
+      .custom-form .form-row { flex-direction: column; align-items: stretch; }
+      .custom-form .form-row label { min-width: auto; }
+      .custom-target-group .target-row { flex-direction: column; align-items: stretch; }
+      .favorite-item .fi-header { flex-wrap: wrap; }
+  }
+  .note-container::-webkit-scrollbar, .custom-list::-webkit-scrollbar { width: 4px; }
+  .note-container::-webkit-scrollbar-track, .custom-list::-webkit-scrollbar-track { background: #eee9e2; border-radius: 10px; }
+  .note-container::-webkit-scrollbar-thumb, .custom-list::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+ </style>
+</head>
+
+<body>
+
+ <div id="app">
+  <!-- ===== 顶部 ===== -->
+  <div class="app-header">
+   <h1>📖 不背<span>文言</span></h1>
+   <div class="header-actions">
+    <button class="settings-btn" id="settingsToggle" title="设置">⚙️</button>
+    <button class="back-btn" id="globalBack" style="display:none;">← 返回</button>
+   </div>
+  </div>
+
+  <!-- ===== 设置面板 ===== -->
+  <div class="settings-overlay" id="settingsOverlay">
+   <div class="settings-panel">
+    <h2>⚙️ 设置 <button class="close-btn" id="settingsClose">✕</button></h2>
+    <div class="setting-group">
+     <label>主题色</label>
+     <div class="color-options" id="colorOptions">
+      <button class="color-btn" data-theme="default" style="background:#1a3c4a;" title="典雅绿"><span class="check">✓</span></button>
+      <button class="color-btn" data-theme="warm" style="background:#6b4f3c;" title="暖阳橙"><span class="check">✓</span></button>
+      <button class="color-btn" data-theme="cool" style="background:#2c3e50;" title="静谧蓝"><span class="check">✓</span></button>
+      <button class="color-btn" data-theme="dark" style="background:#222;" title="暗夜黑"><span class="check">✓</span></button>
+     </div>
+    </div>
+    <div class="setting-group">
+     <label>字体大小</label>
+     <div class="font-options" id="fontOptions">
+      <button class="font-btn" data-size="small">小</button>
+      <button class="font-btn" data-size="medium">中</button>
+      <button class="font-btn" data-size="large">大</button>
+     </div>
+    </div>
+    <button class="btn btn-accent w-full" id="settingsApply">应用并关闭</button>
+   </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 首页 -->
+  <!-- ============================================================ -->
+  <div id="page-home" class="page active">
+   <div class="home-grid">
+    <div class="home-card" data-module="text">
+     <div class="icon">📜</div>
+     <div class="info">
+      <h3>课文解释</h3>
+      <p>打乱句子 · 多重点词 · 填空/选择/笔记</p>
+     </div>
+     <span class="badge">开始</span>
+    </div>
+    <div class="home-card" data-module="poly">
+     <div class="icon">🔤</div>
+     <div class="info">
+      <h3>一词多义</h3>
+      <p>勾选字词 · 例句考察 · 填空/选择/笔记</p>
+     </div>
+     <span class="badge">开始</span>
+    </div>
+    <div class="home-card" data-module="favorites">
+     <div class="icon">⭐</div>
+     <div class="info">
+      <h3>我的收藏</h3>
+      <p>按日期分组 · 学分系统 · 毕业机制</p>
+     </div>
+     <span class="badge" id="favBadge">0</span>
+    </div>
+    <div class="home-card" data-module="reviewfavorites">
+     <div class="icon">🔄</div>
+     <div class="info">
+      <h3>刷收藏题</h3>
+      <p>勾选日期 · 刷题赚学分 · 毕业即止</p>
+     </div>
+     <span class="badge" id="reviewFavBadge">0</span>
+    </div>
+    <div class="home-card" data-module="custom">
+     <div class="icon">✏️</div>
+     <div class="info">
+      <h3>自定义笔记</h3>
+      <p>添加课文 / 一词多义，扩充知识库</p>
+     </div>
+     <span class="badge">编辑</span>
+    </div>
+   </div>
+   <div style="margin-top:22px;font-size:0.8rem;color:var(--text-light);text-align:center;border-top:1px solid #f0ede8;padding-top:16px;">
+    数据自动保存本地 · 支持导出 JSON 备份
+   </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 课文解释 -->
+  <!-- ============================================================ -->
+  <div id="page-text" class="page">
+   <div id="text-list">
+    <h2 style="font-size:1.2rem;font-weight:600;margin-bottom:6px;">📜 选择课文</h2>
+    <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:14px;">点击选中，然后选择模式开始</p>
+    <div class="list-grid" id="textListGrid"></div>
+    <div class="mode-select" id="textModeSelect">
+     <button class="mode-btn" data-mode="fill">✍️ 填空 <span class="sub">输入自行批改</span></button>
+     <button class="mode-btn" data-mode="choice">🎯 选择 <span class="sub">四选一自动判</span></button>
+     <button class="mode-btn" data-mode="note">📝 笔记 <span class="sub">全文折叠 · 多词展开</span></button>
+    </div>
+    <button class="btn w-full" id="textStartBtn" disabled>开始</button>
+   </div>
+   <div id="text-quiz" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+     <span style="font-size:0.9rem;color:var(--text-light);" id="textQuizTitle">《劝学》</span>
+     <span style="font-size:0.9rem;font-weight:500;" id="textProgress">1 / 6</span>
+    </div>
+    <div class="progress">
+     <div class="progress-bar">
+      <div class="fill" id="textProgressFill"></div>
+     </div>
+    </div>
+    <div class="question-area">
+     <div class="question-text" id="textQuestionText"></div>
+     <div class="question-hint" id="textQuestionHint">请解释标红词语在句中的意思</div>
+     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+      <button class="star-toggle" id="textStarToggle" title="收藏此题目">☆</button>
+      <span style="font-size:0.85rem;color:var(--text-light);">点击星星收藏</span>
+     </div>
+     <div id="textFillArea">
+      <div class="fill-input-group">
+       <input type="text" id="textFillInput" placeholder="输入你的解释…" />
+       <button class="btn btn-accent" id="textFillSubmit">确定</button>
+      </div>
+     </div>
+     <div id="textChoiceArea" style="display:none;">
+      <div class="options-grid" id="textOptionsGrid"></div>
+     </div>
+     <div id="textNoteArea" style="display:none;">
+      <div class="note-container" id="textNoteContainer"></div>
+      <button class="btn" id="textNoteBackBtn">返回课文列表</button>
+     </div>
+     <div class="feedback" id="textFeedback">
+      <span class="fb-icon">✓</span>
+      <div><strong id="textFeedbackTitle">正确！</strong><br /><span id="textFeedbackDetail"></span></div>
+     </div>
+     <div class="btn-group" id="textNextGroup" style="display:none;">
+      <button class="btn" id="textNextBtn">下一题 →</button>
+      <button class="btn btn-outline" id="textFinishBtn">完成</button>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 一词多义 -->
+  <!-- ============================================================ -->
+  <div id="page-poly" class="page">
+   <div id="poly-list">
+    <h2 style="font-size:1.2rem;font-weight:600;margin-bottom:4px;">🔤 一词多义</h2>
+    <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:6px;">勾选字词，选择模式开始</p>
+    <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:12px;">
+     <span id="polySelectedCount">已选 0 个</span>
+     <button class="btn" style="padding:4px 16px;font-size:0.8rem;margin-left:12px;background:transparent;color:var(--text-light);border:1px solid #ddd;" id="polySelectAll">全选</button>
+     <button class="btn" style="padding:4px 16px;font-size:0.8rem;margin-left:6px;background:transparent;color:var(--text-light);border:1px solid #ddd;" id="polyDeselectAll">取消</button>
+    </p>
+    <div class="check-list" id="polyCheckList"></div>
+    <div class="mode-select" id="polyModeSelect">
+     <button class="mode-btn" data-mode="fill">✍️ 填空 <span class="sub">输入自行批改</span></button>
+     <button class="mode-btn" data-mode="choice">🎯 选择 <span class="sub">四选一自动判</span></button>
+     <button class="mode-btn" data-mode="note">📝 笔记 <span class="sub">按释义分组</span></button>
+    </div>
+    <button class="btn w-full" id="polyStartBtn" disabled>开始</button>
+   </div>
+   <div id="poly-quiz" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+     <span style="font-size:0.9rem;color:var(--text-light);" id="polyQuizTitle">一词多义</span>
+     <span style="font-size:0.9rem;font-weight:500;" id="polyProgress">1 / 6</span>
+    </div>
+    <div class="progress">
+     <div class="progress-bar">
+      <div class="fill" id="polyProgressFill"></div>
+     </div>
+    </div>
+    <div class="question-area">
+     <div class="question-text" id="polyQuestionText"></div>
+     <div class="question-hint" id="polyQuestionHint">解释标红字在句中的含义</div>
+     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+      <button class="star-toggle" id="polyStarToggle" title="收藏此题目">☆</button>
+      <span style="font-size:0.85rem;color:var(--text-light);">点击星星收藏</span>
+     </div>
+     <div id="polyFillArea">
+      <div class="fill-input-group">
+       <input type="text" id="polyFillInput" placeholder="输入你的解释…" />
+       <button class="btn btn-accent" id="polyFillSubmit">确定</button>
+      </div>
+     </div>
+     <div id="polyChoiceArea" style="display:none;">
+      <div class="options-grid" id="polyOptionsGrid"></div>
+     </div>
+     <div id="polyNoteArea" style="display:none;">
+      <div class="note-container" id="polyNoteContainer"></div>
+      <button class="btn" id="polyNoteBackBtn">返回字词列表</button>
+     </div>
+     <div class="feedback" id="polyFeedback">
+      <span class="fb-icon">✓</span>
+      <div><strong id="polyFeedbackTitle">正确！</strong><br /><span id="polyFeedbackDetail"></span></div>
+     </div>
+     <div class="btn-group" id="polyNextGroup" style="display:none;">
+      <button class="btn" id="polyNextBtn">下一题 →</button>
+      <button class="btn btn-outline" id="polyFinishBtn">完成</button>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 我的收藏 -->
+  <!-- ============================================================ -->
+  <div id="page-favorites" class="page">
+   <h2 style="font-size:1.2rem;font-weight:600;margin-bottom:4px;">⭐ 我的收藏</h2>
+   <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:16px;">按日期分组，学分达到3即毕业</p>
+   <div id="favoritesContainer"></div>
+   <div class="btn-group" style="margin-top:12px;">
+    <button class="btn btn-outline" id="favBackBtn">返回首页</button>
+   </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 刷收藏题 -->
+  <!-- ============================================================ -->
+  <div id="page-reviewfavorites" class="page">
+   <div id="reviewFavList">
+    <h2 style="font-size:1.2rem;font-weight:600;margin-bottom:4px;">🔄 刷收藏题</h2>
+    <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:16px;">勾选日期或题目，开始刷题赚学分（答对+1，答错-1）</p>
+    <div id="reviewFavSelectArea"></div>
+        <div class="mode-select" id="reviewFavModeSelect">
+        <button class="mode-btn" data-mode="fill">✍️ 填空 <span class="sub">输入自行批改</span></button>
+        <button class="mode-btn active" data-mode="choice">🎯 选择 <span class="sub">四选一自动判</span></button>
+    </div>
+    <div class="btn-group">
+     <button class="btn btn-accent" id="reviewFavStartBtn" disabled>开始刷题</button>
+     <button class="btn btn-outline" id="reviewFavBackBtn">返回首页</button>
+    </div>
+   </div>
+   <div id="reviewFavQuiz" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+     <span style="font-size:0.9rem;color:var(--text-light);" id="reviewFavQuizTitle">刷收藏题</span>
+     <span style="font-size:0.9rem;font-weight:500;" id="reviewFavProgress">1 / 6</span>
+    </div>
+    <div class="progress">
+     <div class="progress-bar">
+      <div class="fill" id="reviewFavProgressFill"></div>
+     </div>
+    </div>
+    <div class="question-area">
+     <div class="question-text" id="reviewFavQuestionText"></div>
+     <div class="question-hint" id="reviewFavQuestionHint">请解释标红词语在句中的意思</div>
+     <div id="reviewFavFillArea">
+      <div class="fill-input-group">
+       <input type="text" id="reviewFavFillInput" placeholder="输入你的解释…" />
+       <button class="btn btn-accent" id="reviewFavFillSubmit">确定</button>
+      </div>
+     </div>
+     <div id="reviewFavChoiceArea" style="display:none;">
+      <div class="options-grid" id="reviewFavOptionsGrid"></div>
+     </div>
+     <div class="feedback" id="reviewFavFeedback">
+      <span class="fb-icon">✓</span>
+      <div><strong id="reviewFavFeedbackTitle">正确！</strong><br /><span id="reviewFavFeedbackDetail"></span></div>
+     </div>
+     <div class="btn-group" id="reviewFavNextGroup" style="display:none;">
+      <button class="btn" id="reviewFavNextBtn">下一题 →</button>
+      <button class="btn btn-outline" id="reviewFavFinishBtn">完成</button>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 自定义笔记 -->
+  <!-- ============================================================ -->
+  <div id="page-custom" class="page">
+   <h2 style="font-size:1.2rem;font-weight:600;margin-bottom:6px;">✏️ 自定义笔记</h2>
+   <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:16px;">添加你自己的课文句子或一词多义，扩充知识库</p>
+   <div class="custom-form">
+    <h3 style="font-size:1.05rem;margin-bottom:12px;">📜 添加课文句子（支持多个重点词）</h3>
+    <div class="form-row">
+     <label>课文名</label>
+     <input type="text" id="customTextName" placeholder="例如：论语" />
+    </div>
+    <div class="form-row">
+     <label>句子</label>
+     <input type="text" id="customTextSentence" placeholder="例如：学而时习之，不亦说乎？" />
+    </div>
+    <div id="customTargetsContainer">
+     <div class="custom-target-group">
+      <div class="target-row">
+       <input type="text" class="custom-target-word" placeholder="重点词（如：而）" />
+       <input type="text" class="custom-target-answer" placeholder="释义（如：表示承接）" />
+       <button class="del-target-btn" style="display:none;">✕</button>
+      </div>
+     </div>
+    </div>
+    <div class="form-actions">
+     <button class="add-target-btn" id="addTargetBtn">+ 添加重点词</button>
+     <button class="btn btn-accent" id="customTextAdd">添加课文</button>
+    </div>
+   </div>
+   <div class="custom-form">
+    <h3 style="font-size:1.05rem;margin-bottom:12px;">🔤 添加一词多义</h3>
+    <div class="form-row">
+     <label>字词</label>
+     <input type="text" id="customPolyChar" placeholder="例如：之" />
+    </div>
+    <div class="form-row">
+     <label>义项</label>
+     <input type="text" id="customPolyMeaning" placeholder="例如：助词，的" />
+    </div>
+    <div class="form-row">
+     <label>例句</label>
+     <input type="text" id="customPolyExample" placeholder="例如：壬戌之秋，七月既望。" />
+    </div>
+    <div class="form-row">
+     <label>出处（可选）</label>
+     <div style="display:flex;flex-wrap:wrap;gap:8px;flex:1;">
+      <input type="text" id="customPolyBook" placeholder="书名" style="flex:1;min-width:100px;" />
+      <input type="text" id="customPolyTitle" placeholder="篇名" style="flex:1;min-width:80px;" />
+      <input type="text" id="customPolyAuthor" placeholder="作者" style="flex:1;min-width:80px;" />
+     </div>
+    </div>
+    <div class="form-actions">
+     <button class="btn btn-accent" id="customPolyAdd">添加一词多义</button>
+    </div>
+   </div>
+   <h3 style="font-size:1.05rem;margin-top:20px;">📚 已添加的自定义内容</h3>
+   <div id="customListContainer">
+    <div class="custom-list" id="customList"></div>
+   </div>
+   <div class="btn-group" style="margin-top:12px;">
+    <button class="btn btn-danger" id="customClearAll">清空所有自定义</button>
+   </div>
+  </div>
+
+ </div>
+
+ <script>
+  // ================================================================
+  //  完整数据
+  // ================================================================
+  const DEFAULT_TEXT_DATA = {
+      '劝学': {
+          sentences: [
+              { id: 'qx1', text: '君子曰：学不可以已。', targets: [{ word: '已', answer: '停止' }] },
+              { id: 'qx2', text: '青，取之于蓝，而青于蓝；冰，水为之，而寒于水。', targets: [
+                  { word: '于', answer: '第一个“于”译为“从”；第二个“于”译为“比”；第三个“于”译为“比”' },
+                  { word: '而', answer: '表转折，却' }
+              ] },
+              { id: 'qx3', text: '木直中绳，輮以为轮，其曲中规。', targets: [
+                  { word: '中', answer: '合乎' },
+                  { word: '輮', answer: '通“煣”，用火烤使木弯曲' },
+                  { word: '以为', answer: '古今异义：把……做成（今义：认为）' }
+              ] },
+              { id: 'qx4', text: '虽有槁暴，不复挺者，輮使之然也。', targets: [
+                  { word: '有', answer: '通“又”' },
+                  { word: '暴', answer: '通“曝”，晒' },
+                  { word: '挺', answer: '直' },
+                  { word: '然', answer: '这样' }
+              ] },
+              { id: 'qx5', text: '故木受绳则直，金就砺则利。', targets: [
+                  { word: '金', answer: '古今异义：金属制的刀剑等（今义：黄金）' },
+                  { word: '就', answer: '接近，靠近' },
+                  { word: '砺', answer: '磨刀石' }
+              ] },
+              { id: 'qx6', text: '君子博学而日参省乎己，则知明而行无过矣。', targets: [
+                  { word: '博学', answer: '古今异义：广泛地学习（今义：学问广博精深）' },
+                  { word: '而', answer: '表递进，而且' },
+                  { word: '日', answer: '名词作状语，每天' },
+                  { word: '参', answer: '检验，检查' },
+                  { word: '省', answer: '省察' },
+                  { word: '乎', answer: '介词，相当于“于”' },
+                  { word: '知', answer: '通“智”，智慧' }
+              ] },
+              { id: 'qx7', text: '吾尝终日而思矣，不如须臾之所学也。', targets: [
+                  { word: '尝', answer: '曾经' },
+                  { word: '而', answer: '表修饰' },
+                  { word: '须臾', answer: '片刻，一会儿' },
+                  { word: '之', answer: '助词，用于主谓之间，取消句子独立性' }
+              ] },
+              { id: 'qx8', text: '吾尝跂而望矣，不如登高之博见也。', targets: [
+                  { word: '跂', answer: '提起脚后跟' },
+                  { word: '而', answer: '表修饰' },
+                  { word: '博', answer: '广博，宽广' }
+              ] },
+              { id: 'qx9', text: '登高而招，臂非加长也，而见者远。', targets: [
+                  { word: '而', answer: '第一个表修饰；第二个表转折，却' }
+              ] },
+              { id: 'qx10', text: '顺风而呼，声非加疾也，而闻者彰。', targets: [
+                  { word: '而', answer: '第一个表修饰；第二个表转折，却' },
+                  { word: '疾', answer: '古今异义：强，指声音宏大（今义：疾病）' },
+                  { word: '彰', answer: '听得清楚' }
+              ] },
+              { id: 'qx11', text: '假舆马者，非利足也，而致千里。', targets: [
+                  { word: '假', answer: '古今异义：借助，利用（今义：与“真”相对）' },
+                  { word: '利足', answer: '善于行走（利：形容词使动，使……快）' },
+                  { word: '而', answer: '表转折，却' },
+                  { word: '致', answer: '到达' }
+              ] },
+              { id: 'qx12', text: '假舟楫者，非能水也，而绝江河。', targets: [
+                  { word: '假', answer: '借助，利用' },
+                  { word: '水', answer: '名词作动词，游水' },
+                  { word: '而', answer: '表转折，却' },
+                  { word: '绝', answer: '横渡' }
+              ] },
+              { id: 'qx13', text: '君子生非异也，善假于物也。', targets: [
+                  { word: '生', answer: '通“性”，资质，禀赋' },
+                  { word: '假', answer: '借助，利用' },
+                  { word: '于', answer: '介词，引出对象' }
+              ] },
+              { id: 'qx14', text: '积土成山，风雨兴焉；积水成渊，蛟龙生焉。', targets: [
+                  { word: '兴', answer: '起' },
+                  { word: '焉', answer: '兼词，于之，从这里' }
+              ] },
+              { id: 'qx15', text: '积善成德，而神明自得，圣心备焉。', targets: [
+                  { word: '而', answer: '表承接，就' },
+                  { word: '得', answer: '获得' },
+                  { word: '备', answer: '具备' },
+                  { word: '焉', answer: '语气词，了' }
+              ] },
+              { id: 'qx16', text: '故不积跬步，无以至千里。', targets: [
+                  { word: '跬', answer: '古代称跨出一脚为“跬”，两脚为“步”' },
+                  { word: '无以', answer: '固定格式，没有用来……的办法' }
+              ] },
+              { id: 'qx17', text: '不积小流，无以成江海。', targets: [
+                  { word: '无以', answer: '没有用来……的办法' }
+              ] },
+              { id: 'qx18', text: '骐骥一跃，不能十步。', targets: [
+                  { word: '骐骥', answer: '骏马' }
+              ] },
+              { id: 'qx19', text: '驽马十驾，功在不舍。', targets: [
+                  { word: '驽马', answer: '劣马' },
+                  { word: '驾', answer: '马拉车走一天的路程' }
+              ] },
+              { id: 'qx20', text: '锲而舍之，朽木不折。', targets: [
+                  { word: '锲', answer: '刻' },
+                  { word: '而', answer: '表假设，如果' }
+              ] },
+              { id: 'qx21', text: '锲而不舍，金石可镂。', targets: [
+                  { word: '锲', answer: '刻' },
+                  { word: '而', answer: '表假设，如果' },
+                  { word: '镂', answer: '雕刻' }
+              ] },
+              { id: 'qx22', text: '蚓无爪牙之利，筋骨之强，上食埃土，下饮黄泉，用心一也。', targets: [
+                  { word: '之', answer: '定语后置的标志' },
+                  { word: '上', answer: '名词作状语，向上' },
+                  { word: '下', answer: '名词作状语，向下' },
+                  { word: '用心', answer: '古今异义：因为心思（今义：集中注意力）' },
+                  { word: '一', answer: '数词作形容词，专一' }
+              ] },
+              { id: 'qx23', text: '蟹六跪而二螯，非蛇鳝之穴无可寄托者，用心躁也。', targets: [
+                  { word: '跪', answer: '古今异义：脚或腿（今义：跪下）' },
+                  { word: '而', answer: '表并列' },
+                  { word: '之', answer: '助词，的' },
+                  { word: '寄托', answer: '古今异义：安身，容身（今义：把感情、理想等放在某人身上）' },
+                  { word: '用心', answer: '古今异义：因为心思（今义：集中注意力）' },
+                  { word: '躁', answer: '浮躁，不专一' }
+              ] }
+          ]
+      },
+      '师说': {
+          sentences: [
+              { id: 'ss1', text: '古之学者必有师。', targets: [{ word: '学者', answer: '古今异义：求学的人（今义：在学术上有一定成就的人）' }] },
+              { id: 'ss2', text: '师者，所以传道受业解惑也。', targets: [
+                  { word: '所以', answer: '用来……的' },
+                  { word: '受', answer: '通“授”，传授' }
+              ] },
+              { id: 'ss3', text: '人非生而知之者，孰能无惑？', targets: [
+                  { word: '而', answer: '表承接，就' },
+                  { word: '之', answer: '代词，指知识和道理' }
+              ] },
+              { id: 'ss4', text: '惑而不从师，其为惑也，终不解矣。', targets: [
+                  { word: '而', answer: '表转折，却' },
+                  { word: '其', answer: '指示代词，那些' }
+              ] },
+              { id: 'ss5', text: '生乎吾前，其闻道也固先乎吾，吾从而师之。', targets: [
+                  { word: '乎', answer: '介词，在/比（第一个“乎”表“在”，第二个“乎”表“比”）' },
+                  { word: '师', answer: '意动用法，以……为师' }
+              ] },
+              { id: 'ss6', text: '生乎吾后，其闻道也亦先乎吾，吾从而师之。', targets: [{ word: '师', answer: '意动用法，以……为师' }] },
+              { id: 'ss7', text: '吾师道也，夫庸知其年之先后生于吾乎？', targets: [
+                  { word: '师', answer: '名词作动词，学习' },
+                  { word: '庸', answer: '岂，哪里' },
+                  { word: '之', answer: '助词，用于主谓之间，取消句子独立性' }
+              ] },
+              { id: 'ss8', text: '是故无贵无贱，无长无少，道之所存，师之所存也。', targets: [{ word: '之', answer: '助词，用于主谓之间，取消句子独立性' }] },
+              { id: 'ss9', text: '嗟乎！师道之不传也久矣！', targets: [{ word: '之', answer: '助词，用于主谓之间，取消句子独立性' }] },
+              { id: 'ss10', text: '欲人之无惑也难矣！', targets: [{ word: '之', answer: '助词，用于主谓之间，取消句子独立性' }] },
+              { id: 'ss11', text: '古之圣人，其出人也远矣，犹且从师而问焉。', targets: [
+                  { word: '出', answer: '超出，超过' },
+                  { word: '焉', answer: '代词，之（代指老师）' }
+              ] },
+              { id: 'ss12', text: '今之众人，其下圣人也亦远矣，而耻学于师。', targets: [
+                  { word: '众人', answer: '古今异义：一般人，普通人（今义：大家，许多人）' },
+                  { word: '下', answer: '名词作动词，低于' },
+                  { word: '而', answer: '表转折，却' },
+                  { word: '耻', answer: '意动用法，以……为耻' },
+                  { word: '于', answer: '介词，向' }
+              ] },
+              { id: 'ss13', text: '圣人之所以为圣，愚人之所以为愚，其皆出于此乎？', targets: [
+                  { word: '所以', answer: '……的原因' },
+                  { word: '其', answer: '表推测，大概' }
+              ] },
+              { id: 'ss14', text: '爱其子，择师而教之；于其身也，则耻师焉，惑矣。', targets: [
+                  { word: '于', answer: '介词，对于' },
+                  { word: '身', answer: '自身，自己' },
+                  { word: '耻', answer: '意动用法，以……为耻' },
+                  { word: '师', answer: '名词作动词，从师' }
+              ] },
+              { id: 'ss15', text: '彼童子之师，授之书而习其句读者，非吾所谓传其道解其惑者也。', targets: [
+                  { word: '之', answer: '代词，指童子' },
+                  { word: '其', answer: '代词，指书' }
+              ] },
+              { id: 'ss16', text: '句读之不知，惑之不解，或师焉，或不焉，小学而大遗，吾未见其明也。', targets: [
+                  { word: '之', answer: '宾语前置的标志（助词）' },
+                  { word: '不', answer: '通“否”，读fǒu' },
+                  { word: '小学', answer: '古今异义：小的方面学习（今义：小学校）' },
+                  { word: '大遗', answer: '大的方面遗漏' }
+              ] },
+              { id: 'ss17', text: '巫医乐师百工之人，不耻相师。', targets: [
+                  { word: '耻', answer: '意动用法，以……为耻' },
+                  { word: '师', answer: '名词作动词，学习' }
+              ] },
+              { id: 'ss18', text: '士大夫之族，曰师曰弟子云者，则群聚而笑之。', targets: [
+                  { word: '之', answer: '指示代词，这' },
+                  { word: '而', answer: '表修饰' }
+              ] },
+              { id: 'ss19', text: '问之，则曰：“彼与彼年相若也，道相似也。”', targets: [{ word: '之', answer: '代词，他们' }] },
+              { id: 'ss20', text: '位卑则足羞，官盛则近谀。', targets: [
+                  { word: '卑', answer: '低下' },
+                  { word: '盛', answer: '高' },
+                  { word: '羞', answer: '意动用法，感到羞耻' }
+              ] },
+              { id: 'ss21', text: '呜呼！师道之不复，可知矣。', targets: [
+                  { word: '之', answer: '助词，用于主谓之间，取消句子独立性' },
+                  { word: '复', answer: '恢复' }
+              ] },
+              { id: 'ss22', text: '巫医乐师百工之人，君子不齿，今其智乃反不能及，其可怪也欤！', targets: [
+                  { word: '乃', answer: '竟，竟然' },
+                  { word: '其', answer: '表反问，难道' }
+              ] },
+              { id: 'ss23', text: '圣人无常师。', targets: [{ word: '常', answer: '固定的' }] },
+              { id: 'ss24', text: '孔子师郯子、苌弘、师襄、老聃。', targets: [{ word: '师', answer: '意动用法，以……为师' }] },
+              { id: 'ss25', text: '郯子之徒，其贤不及孔子。', targets: [
+                  { word: '徒', answer: '同类的人' },
+                  { word: '贤', answer: '形容词作名词，才能，品德' }
+              ] },
+              { id: 'ss27', text: '是故弟子不必不如师，师不必贤于弟子。', targets: [
+                  { word: '不必', answer: '古今异义：不一定（今义：没有必要）' },
+                  { word: '贤', answer: '胜过，超过' },
+                  { word: '于', answer: '介词，比' }
+              ] },
+              { id: 'ss28', text: '闻道有先后，术业有专攻，如是而已。', targets: [{ word: '攻', answer: '学习，研究' }] },
+              { id: 'ss29', text: '李氏子蟠，年十七，好古文，六艺经传皆通习之。', targets: [
+                  { word: '好', answer: '喜欢' },
+                  { word: '通', answer: '普遍' }
+              ] },
+              { id: 'ss30', text: '不拘于时，学于余。', targets: [
+                  { word: '于', answer: '第一个“于”表被动，被；第二个“于”表介词，向' }
+              ] },
+              { id: 'ss31', text: '余嘉其能行古道，作《师说》以贻之。', targets: [
+                  { word: '嘉', answer: '赞许' },
+                  { word: '贻', answer: '赠送' }
+              ] }
+          ]
+      }
+  };
+  
+  const DEFAULT_POLY_DATA = {
+      '而': {
+          meanings: [
+              { meaning: '表示转折，却', example: '青，取之于蓝，而青于蓝。', book: '劝学', author: '荀子' },
+              { meaning: '表示承接，就', example: '锲而舍之，朽木不折。', book: '劝学', author: '荀子' },
+              { meaning: '表示递进，而且', example: '君子博学而日参省乎己。', book: '劝学', author: '荀子' },
+              { meaning: '表示修饰，地', example: '顺流而东也。', book: '赤壁赋', author: '苏轼' }
+          ]
+      },
+      '之': {
+          meanings: [
+              { meaning: '助词，的', example: '壬戌之秋，七月既望。', book: '赤壁赋', author: '苏轼' },
+              { meaning: '助词，用于主谓之间', example: '吾师道也，夫庸知其年之先后生于吾乎？', book: '师说', author: '韩愈' },
+              { meaning: '代词，他/它/这', example: '人非生而知之者。', book: '师说', author: '韩愈' },
+              { meaning: '定语后置标志', example: '蚓无爪牙之利。', book: '劝学', author: '荀子' }
+          ]
+      },
+      '其': {
+          meanings: [
+              { meaning: '代词，他的/它的', example: '其皆出于此乎？', book: '师说', author: '韩愈' },
+              { meaning: '代词，那/那些', example: '其险也若此。', book: '蜀道难', author: '李白' },
+              { meaning: '语气词，表推测', example: '其真无马邪？', book: '马说', author: '韩愈' },
+              { meaning: '代词，自己', example: '于其身也，则耻师焉。', book: '师说', author: '韩愈' }
+          ]
+      },
+      '以': {
+          meanings: [
+              { meaning: '介词，用/拿', example: '以刀劈狼首。', book: '狼', author: '蒲松龄' },
+              { meaning: '介词，因为/由于', example: '不以物喜，不以己悲。', book: '岳阳楼记', author: '范仲淹' },
+              { meaning: '连词，来/用来', example: '作《师说》以贻之。', book: '师说', author: '韩愈' },
+              { meaning: '介词，在/从', example: '以吾一日长乎尔。', book: '论语', author: '孔子' }
+          ]
+      },
+      '于': {
+          meanings: [
+              { meaning: '介词，在', example: '苏子与客泛舟游于赤壁之下。', book: '赤壁赋', author: '苏轼' },
+              { meaning: '介词，对于', example: '于其身也，则耻师焉。', book: '师说', author: '韩愈' },
+              { meaning: '介词，比', example: '青，取之于蓝，而青于蓝。', book: '劝学', author: '荀子' },
+              { meaning: '介词，被', example: '不拘于时。', book: '师说', author: '韩愈' }
+          ]
+      },
+      '乃': {
+          meanings: [
+              { meaning: '副词，于是/就', example: '乃重修岳阳楼。', book: '岳阳楼记', author: '范仲淹' },
+              { meaning: '副词，竟然', example: '乃不知有汉，无论魏晋。', book: '桃花源记', author: '陶渊明' },
+              { meaning: '代词，你的', example: '家祭无忘告乃翁。', book: '示儿', author: '陆游' },
+              { meaning: '判断词，是/就是', example: '此乃英雄也。', book: '三国演义', author: '罗贯中' }
+          ]
+      }
+  };
+  
+  // ================================================================
+  //  自定义数据管理
+  // ================================================================
+  const CUSTOM_STORAGE_KEY = 'buwenyan_custom';
+  function loadCustom() {
+      try { const raw = localStorage.getItem(CUSTOM_STORAGE_KEY); return raw ? JSON.parse(raw) : { texts: {}, polys: {} }; } catch { return { texts: {}, polys: {} }; }
+  }
+  function saveCustom(custom) { localStorage.setItem(CUSTOM_STORAGE_KEY, JSON.stringify(custom)); }
+  
+  function getMergedTextData() {
+      const custom = loadCustom();
+      const merged = { ...DEFAULT_TEXT_DATA };
+      for (const name in custom.texts) {
+          if (!merged[name]) merged[name] = { sentences: [] };
+          const existing = merged[name].sentences;
+          const newSentences = custom.texts[name].sentences || [];
+          newSentences.forEach(s => {
+              const dup = existing.some(e => e.text === s.text && JSON.stringify(e.targets) === JSON.stringify(s.targets));
+              if (!dup) existing.push(s);
+          });
+      }
+      return merged;
+  }
+  function getMergedPolyData() {
+      const custom = loadCustom();
+      const merged = { ...DEFAULT_POLY_DATA };
+      for (const char in custom.polys) {
+          if (!merged[char]) merged[char] = { meanings: [] };
+          const existing = merged[char].meanings;
+          const newMeanings = custom.polys[char].meanings || [];
+          newMeanings.forEach(m => {
+              const dup = existing.some(e => e.meaning === m.meaning && e.example === m.example);
+              if (!dup) existing.push(m);
+          });
+      }
+      return merged;
+  }
+  
+  // ================================================================
+  //  学习数据管理
+  // ================================================================
+  const STORAGE_KEY = 'buwenyan_learning';
+  const SETTINGS_KEY = 'buwenyan_settings';
+  const FAVORITE_KEY = 'buwenyan_favorites';
+  
+  function getLearningData() {
+      try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : {}; } catch { return {}; }
+  }
+  function saveLearningData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+  
+  function getQuestionId(module, item) {
+      if (module === 'text') {
+          return 'text_' + (item.sentenceId || item.id) + '_' + (item.word || '');
+      } else {
+          return 'poly_' + (item.char || '') + '_' + (item.meaning || '').slice(0, 10);
+      }
+  }
+  
+  function updateLearning(module, item, isCorrect) {
+      const data = getLearningData();
+      const id = getQuestionId(module, item);
+      if (!data[id]) data[id] = { learnCount: 0, correctCount: 0, wrongCount: 0, lastLearn: 0, mastered: false };
+      const rec = data[id];
+      rec.learnCount += 1;
+      if (isCorrect) rec.correctCount += 1;
+      else rec.wrongCount += 1;
+      rec.lastLearn = Date.now();
+      const total = rec.correctCount + rec.wrongCount;
+      if (rec.learnCount >= 3 && total > 0 && (rec.correctCount / total) >= 0.8) rec.mastered = true;
+      else rec.mastered = false;
+      saveLearningData(data);
+      return rec;
+  }
+  
+  function getLearningStatus(module, item) {
+      const data = getLearningData();
+      const id = getQuestionId(module, item);
+      return data[id] || null;
+  }
+  
+  function getAllQuestionIds() {
+      const mergedText = getMergedTextData();
+      const mergedPoly = getMergedPolyData();
+      const ids = new Set();
+      try {
+          for (const name in mergedText) {
+              const sentences = mergedText[name]?.sentences || [];
+              sentences.forEach(s => {
+                  (s.targets || []).forEach(t => {
+                      ids.add(getQuestionId('text', { sentenceId: s.id, word: t.word }));
+                  });
+              });
+          }
+          for (const char in mergedPoly) {
+              const meanings = mergedPoly[char]?.meanings || [];
+              meanings.forEach(m => {
+                  ids.add(getQuestionId('poly', { char, meaning: m.meaning }));
+              });
+          }
+      } catch (e) { console.warn('获取题目ID失败', e); }
+      const learningData = getLearningData();
+      if (ids.size === 0) {
+          Object.keys(learningData).forEach(id => ids.add(id));
+      }
+      return ids;
+  }
+  
+  // ================================================================
+  //  收藏数据管理
+  // ================================================================
+  function getFavorites() {
+      try { const raw = localStorage.getItem(FAVORITE_KEY); return raw ? JSON.parse(raw) : []; } catch { return []; }
+  }
+  function saveFavorites(favs) { localStorage.setItem(FAVORITE_KEY, JSON.stringify(favs)); }
+  
+  function addFavorite(questionId, module, question, answer, type, extra) {
+      let favs = getFavorites();
+      if (favs.some(f => f.questionId === questionId)) return favs.find(f => f.questionId === questionId);
+      const newFav = {
+          questionId,
+          module,
+          question,
+          answer,
+          type,
+          extra: extra || {},
+          credit: 0,
+          graduated: false,
+          time: Date.now()
+      };
+      favs.push(newFav);
+      saveFavorites(favs);
+      return newFav;
+  }
+  
+  function removeFavorite(questionId) {
+      let favs = getFavorites();
+      favs = favs.filter(f => f.questionId !== questionId);
+      saveFavorites(favs);
+  }
+  
+  function toggleFavorite(questionId, module, question, answer, type, extra) {
+      const favs = getFavorites();
+      const exist = favs.find(f => f.questionId === questionId);
+      if (exist) {
+          removeFavorite(questionId);
+          return false;
+      } else {
+          addFavorite(questionId, module, question, answer, type, extra);
+          return true;
+      }
+  }
+  
+  function isFavorited(questionId) {
+      return getFavorites().some(f => f.questionId === questionId);
+  }
+  
+  function getFavorite(questionId) {
+      return getFavorites().find(f => f.questionId === questionId) || null;
+  }
+  
+  function updateCredit(questionId, delta) {
+      let favs = getFavorites();
+      const idx = favs.findIndex(f => f.questionId === questionId);
+      if (idx === -1) return null;
+      const fav = favs[idx];
+      let newCredit = (fav.credit || 0) + delta;
+      if (newCredit < 0) newCredit = 0;
+      if (newCredit >= 3) {
+          fav.credit = 3;
+          fav.graduated = true;
+      } else {
+          fav.credit = newCredit;
+          fav.graduated = false;
+      }
+      favs[idx] = fav;
+      saveFavorites(favs);
+      return fav;
+  }
+  
+  function resetCredit(questionId) {
+      let favs = getFavorites();
+      const idx = favs.findIndex(f => f.questionId === questionId);
+      if (idx === -1) return null;
+      favs[idx].credit = 0;
+      favs[idx].graduated = false;
+      saveFavorites(favs);
+      return favs[idx];
+  }
+  
+  // ================================================================
+  //  设置管理
+  // ================================================================
+  const SETTINGS = {
+      themes: {
+          default: { '--primary': '#1a3c4a', '--primary-light': '#2a5a6e', '--primary-dark': '#0e2832',
+              '--accent': '#c9a86c', '--accent-light': '#e8d5b0', '--bg': '#f4f1ea', '--card': '#ffffff',
+              '--text': '#1e2a36', '--text-light': '#5a6a7a', '--highlight-bg': '#fdebd0',
+              '--highlight-border': '#d48c6b' },
+          warm: { '--primary': '#6b4f3c', '--primary-light': '#8b6b54', '--primary-dark': '#4d3425',
+              '--accent': '#d48c6b', '--accent-light': '#f0d5c0', '--bg': '#faf0e6', '--card': '#ffffff',
+              '--text': '#3d2b1f', '--text-light': '#7a6555', '--highlight-bg': '#fce4d6',
+              '--highlight-border': '#c97d5a' },
+          cool: { '--primary': '#2c3e50', '--primary-light': '#4a6a7a', '--primary-dark': '#1a2a38',
+              '--accent': '#5d8a9e', '--accent-light': '#b8d4e0', '--bg': '#e8f0f5', '--card': '#ffffff',
+              '--text': '#1e2c3a', '--text-light': '#4d6a7a', '--highlight-bg': '#d6eaf8',
+              '--highlight-border': '#5d8a9e' },
+          dark: { '--primary': '#d4c9b0', '--primary-light': '#e0d6c0', '--primary-dark': '#b0a48a',
+              '--accent': '#c9a86c', '--accent-light': '#e8d5b0', '--bg': '#2a2a2a', '--card': '#3a3a3a',
+              '--text': '#e8e0d6', '--text-light': '#b0a8a0', '--highlight-bg': '#4a3a2a',
+              '--highlight-border': '#c9a86c' }
+      },
+      fontSizes: {
+          small: { '--font-size-base': '14px' },
+          medium: { '--font-size-base': '16px' },
+          large: { '--font-size-base': '20px' }
+      }
+  };
+  
+  function loadSettings() {
+      try { const raw = localStorage.getItem(SETTINGS_KEY); return raw ? JSON.parse(raw) : { theme: 'default',
+              fontSize: 'medium' }; } catch { return { theme: 'default', fontSize: 'medium' }; }
+  }
+  function saveSettings(settings) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
+  function applySettings(settings) {
+      const theme = SETTINGS.themes[settings.theme] || SETTINGS.themes.default;
+      const font = SETTINGS.fontSizes[settings.fontSize] || SETTINGS.fontSizes.medium;
+      const root = document.documentElement;
+      Object.entries(theme).forEach(([key, val]) => root.style.setProperty(key, val));
+      Object.entries(font).forEach(([key, val]) => root.style.setProperty(key, val));
+      document.querySelectorAll('.color-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.theme === settings.theme);
+      });
+      document.querySelectorAll('.font-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.size === settings.fontSize);
+      });
+  }
+  
+  // ================================================================
+  //  工具函数
+  // ================================================================
+  function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+  }
+  
+  function generateOptions(correctAnswer, pool) {
+      let candidates = pool.filter(m => m !== correctAnswer && m.trim() !== '');
+      candidates = shuffle(candidates).slice(0, 3);
+      while (candidates.length < 3) {
+          const fallbacks = ['表示转折', '表示承接', '助词', '代词', '介词', '语气词', '连词', '副词'];
+          const pick = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+          if (!candidates.includes(pick) && pick !== correctAnswer) candidates.push(pick);
+          else candidates.push('其他含义');
+      }
+      return shuffle([correctAnswer, ...candidates]);
+  }
+  
+  function formatSource(book, title, author) {
+      let parts = [];
+      if (book) {
+          let b = book.trim();
+          if (!b.startsWith('《') && !b.startsWith('「')) b = '《' + b + '》';
+          parts.push(b);
+      }
+      if (title) parts.push(title.trim());
+      if (author) parts.push(author.trim());
+      if (parts.length === 0) return '（出处不详）';
+      return parts.join(' ');
+  }
+  
+  // ================================================================
+  //  状态管理
+  // ================================================================
+  const state = {
+      page: 'home',
+      text: { selectedText: null, mode: null, questions: [], currentIndex: 0, answered: false, totalCorrect: 0,
+          totalWrong: 0 },
+      poly: { selectedChars: [], mode: null, questions: [], currentIndex: 0, answered: false, totalCorrect: 0,
+          totalWrong: 0 },
+      reviewFav: { questions: [], currentIndex: 0, answered: false, totalCorrect: 0, totalWrong: 0, mode: 'choice' }
+  };
+  
+  // ================================================================
+  //  页面导航
+  // ================================================================
+  function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      const back = document.getElementById('globalBack');
+      if (pageId === 'page-home') back.style.display = 'none';
+      else back.style.display = 'flex';
+      state.page = pageId.replace('page-', '');
+      if (pageId === 'page-home') updateHomeBadges();
+      if (pageId === 'page-favorites') renderFavoritesPage();
+      if (pageId === 'page-reviewfavorites') renderReviewFavList();
+  }
+  
+  document.querySelectorAll('.home-card').forEach(card => {
+      card.addEventListener('click', function() {
+          const module = this.dataset.module;
+          if (module === 'text') renderTextList();
+          else if (module === 'poly') renderPolyList();
+          else if (module === 'favorites') showPage('page-favorites');
+          else if (module === 'reviewfavorites') showPage('page-reviewfavorites');
+          else if (module === 'custom') renderCustomPage();
+      });
+  });
+  
+  document.getElementById('globalBack').addEventListener('click', function() {
+      if (state.page === 'text') {
+          if (document.getElementById('text-quiz').style.display === 'block') {
+              document.getElementById('text-quiz').style.display = 'none';
+              document.getElementById('text-list').style.display = 'block';
+              renderTextList();
+          } else showPage('page-home');
+      } else if (state.page === 'poly') {
+          if (document.getElementById('poly-quiz').style.display === 'block') {
+              document.getElementById('poly-quiz').style.display = 'none';
+              document.getElementById('poly-list').style.display = 'block';
+              renderPolyList();
+          } else showPage('page-home');
+      } else if (state.page === 'favorites') showPage('page-home');
+      else if (state.page === 'reviewfavorites') {
+          if (document.getElementById('reviewFavQuiz').style.display === 'block') {
+              document.getElementById('reviewFavQuiz').style.display = 'none';
+              document.getElementById('reviewFavList').style.display = 'block';
+              renderReviewFavList();
+          } else showPage('page-home');
+      } else if (state.page === 'custom') showPage('page-home');
+      else showPage('page-home');
+  });
+  
+  function updateHomeBadges() {
+      const favs = getFavorites();
+      document.getElementById('favBadge').textContent = favs.length;
+      const ungraduated = favs.filter(f => !f.graduated).length;
+      document.getElementById('reviewFavBadge').textContent = ungraduated;
+  }
+  
+  // ================================================================
+  //  课文解释模块
+  // ================================================================
+  function getTextData() { return getMergedTextData(); }
+  
+  function renderTextList() {
+      showPage('page-text');
+      document.getElementById('text-quiz').style.display = 'none';
+      document.getElementById('text-list').style.display = 'block';
+      const grid = document.getElementById('textListGrid');
+      grid.innerHTML = '';
+      const data = getTextData();
+      for (const name in data) {
+          const div = document.createElement('div');
+          div.className = 'list-item';
+          div.dataset.text = name;
+          const sentences = data[name].sentences;
+          let totalTargets = 0,
+              masteredTargets = 0,
+              learningTargets = 0,
+              newTargets = 0;
+          sentences.forEach(s => {
+              (s.targets || []).forEach(t => {
+                  totalTargets++;
+                  const status = getLearningStatus('text', { sentenceId: s.id, word: t.word });
+                  if (!status) newTargets++;
+                  else if (status.mastered) masteredTargets++;
+                  else learningTargets++;
+              });
+          });
+          let statusText = '未学',
+              cls = 'new';
+          if (masteredTargets === totalTargets && totalTargets > 0) { statusText = '已掌握';
+              cls = 'mastered'; } else if (masteredTargets > 0 || learningTargets > 0) { statusText = '学习中';
+              cls = 'learning'; }
+          div.innerHTML = `${name} <span class="status-tag ${cls}">${statusText}</span>`;
+          if (state.text.selectedText === name) div.classList.add('selected');
+          div.addEventListener('click', function() {
+              document.querySelectorAll('#textListGrid .list-item').forEach(el => el.classList.remove('selected'));
+              this.classList.add('selected');
+              state.text.selectedText = this.dataset.text;
+              document.getElementById('textStartBtn').disabled = false;
+          });
+          grid.appendChild(div);
+      }
+      document.querySelectorAll('#textModeSelect .mode-btn').forEach(btn => {
+          btn.classList.remove('active');
+          btn.addEventListener('click', function() {
+              document.querySelectorAll('#textModeSelect .mode-btn').forEach(b => b.classList.remove('active'));
+              this.classList.add('active');
+              state.text.mode = this.dataset.mode;
+              document.getElementById('textStartBtn').disabled = !state.text.selectedText;
+          });
+      });
+      if (state.text.mode) {
+          document.querySelector(`#textModeSelect .mode-btn[data-mode="${state.text.mode}"]`)?.classList.add('active');
+      }
+      document.getElementById('textStartBtn').disabled = !state.text.selectedText || !state.text.mode;
+      document.getElementById('textStartBtn').onclick = startTextQuiz;
+  }
+  
+  function startTextQuiz() {
+      const textName = state.text.selectedText;
+      const mode = state.text.mode;
+      if (!textName || !mode) return;
+      const data = getTextData();
+      const sentences = data[textName]?.sentences || [];
+      if (sentences.length === 0) { alert('该课文暂无句子'); return; }
+  
+      if (mode === 'note') {
+          document.getElementById('text-list').style.display = 'none';
+          document.getElementById('text-quiz').style.display = 'block';
+          document.getElementById('textQuizTitle').textContent = '📝 笔记 · ' + textName;
+          document.getElementById('textProgress').textContent = '全文浏览';
+          document.getElementById('textProgressFill').style.width = '100%';
+          document.getElementById('textFillArea').style.display = 'none';
+          document.getElementById('textChoiceArea').style.display = 'none';
+          document.getElementById('textNextGroup').style.display = 'none';
+          document.getElementById('textFeedback').classList.remove('show');
+          const noteArea = document.getElementById('textNoteArea');
+          noteArea.style.display = 'block';
+          const container = document.getElementById('textNoteContainer');
+          container.innerHTML = '';
+          sentences.forEach((s, idx) => {
+              const div = document.createElement('div');
+              div.className = 'note-sentence';
+              let highlightedText = s.text;
+              (s.targets || []).forEach(t => {
+                  const regex = new RegExp(t.word, 'g');
+                  highlightedText = highlightedText.replace(regex, `<span class="highlight">${t.word}</span>`);
+              });
+              div.innerHTML = `
+                          <div class="sentence-text">${idx+1}. ${highlightedText}</div>
+                          <div class="sentence-detail">
+                              ${(s.targets || []).map(t => `
+                                  <div class="meaning-item">
+                                      <span class="label">${t.word}</span>
+                                      <span class="value">${t.answer}</span>
+                                  </div>
+                              `).join('')}
+                          </div>
+                      `;
+              div.addEventListener('click', function() { this.classList.toggle('open'); });
+              container.appendChild(div);
+              (s.targets || []).forEach(t => {
+                  updateLearning('text', { sentenceId: s.id, word: t.word }, true);
+              });
+          });
+          document.getElementById('textNoteBackBtn').onclick = function() {
+              document.getElementById('text-quiz').style.display = 'none';
+              document.getElementById('text-list').style.display = 'block';
+              renderTextList();
+          };
+          return;
+      }
+  
+      let questions = [];
+      sentences.forEach(s => {
+          (s.targets || []).forEach(t => {
+              questions.push({
+                  sentenceId: s.id,
+                  text: s.text,
+                  word: t.word,
+                  answer: t.answer,
+                  textName: textName,
+                  module: 'text'
+              });
+          });
+      });
+      if (questions.length === 0) { alert('该课文没有可考察的重点词'); return; }
+  
+      state.text.questions = shuffle(questions);
+      state.text.currentIndex = 0;
+      state.text.answered = false;
+      state.text.totalCorrect = 0;
+      state.text.totalWrong = 0;
+      document.getElementById('text-list').style.display = 'none';
+      document.getElementById('text-quiz').style.display = 'block';
+      document.getElementById('textQuizTitle').textContent = '《' + textName + '》';
+      document.getElementById('textNoteArea').style.display = 'none';
+      if (mode === 'fill') {
+          document.getElementById('textFillArea').style.display = 'block';
+          document.getElementById('textChoiceArea').style.display = 'none';
+      } else {
+          document.getElementById('textFillArea').style.display = 'none';
+          document.getElementById('textChoiceArea').style.display = 'block';
+      }
+      document.getElementById('textFeedback').classList.remove('show', 'success', 'error', 'info');
+      document.getElementById('textNextGroup').style.display = 'none';
+      document.getElementById('textFillInput').disabled = false;
+      document.getElementById('textFillInput').value = '';
+      document.getElementById('textFillSubmit').disabled = false;
+      renderTextQuestion();
+  }
+  
+  function renderTextQuestion() {
+      const qs = state.text.questions;
+      const idx = state.text.currentIndex;
+      if (idx >= qs.length) { finishTextQuiz(); return; }
+      const q = qs[idx];
+      document.getElementById('textProgress').textContent = (idx + 1) + ' / ' + qs.length;
+      document.getElementById('textProgressFill').style.width = ((idx) / qs.length * 100) + '%';
+      let html = q.text;
+      const regex = new RegExp(q.word, 'g');
+      html = html.replace(regex, `<span class="highlight">${q.word}</span>`);
+      document.getElementById('textQuestionText').innerHTML = html;
+      document.getElementById('textQuestionHint').textContent = '请解释「' + q.word + '」在句中的意思';
+      document.getElementById('textFillInput').value = '';
+      document.getElementById('textFillInput').disabled = false;
+      document.getElementById('textFillSubmit').disabled = false;
+      document.getElementById('textFeedback').classList.remove('show', 'success', 'error', 'info');
+      document.getElementById('textNextGroup').style.display = 'none';
+  
+      // 收藏按钮
+      const questionId = getQuestionId('text', { sentenceId: q.sentenceId, word: q.word });
+      const starBtn = document.getElementById('textStarToggle');
+      starBtn.textContent = isFavorited(questionId) ? '★' : '☆';
+      starBtn.className = 'star-toggle' + (isFavorited(questionId) ? ' favorited' : '');
+      starBtn.onclick = function() {
+          const fav = toggleFavorite(questionId, 'text', q.text, q.answer, 'text', { textName: q.textName, word: q.word });
+          this.textContent = fav ? '★' : '☆';
+          this.classList.toggle('favorited', fav);
+          updateHomeBadges();
+      };
+  
+      if (state.text.mode === 'choice') {
+          const allData = getTextData();
+          const allAnswers = new Set();
+          for (const name in allData) {
+              allData[name].sentences.forEach(s => {
+                  (s.targets || []).forEach(t => allAnswers.add(t.answer));
+              });
+          }
+          const options = generateOptions(q.answer, [...allAnswers]);
+          const grid = document.getElementById('textOptionsGrid');
+          grid.innerHTML = '';
+          const labels = ['A', 'B', 'C', 'D'];
+          options.forEach((opt, i) => {
+              const btn = document.createElement('button');
+              btn.className = 'option-btn';
+              btn.innerHTML = `<span class="tag">${labels[i]}</span> ${opt}`;
+              btn.dataset.value = opt;
+              btn.addEventListener('click', function() {
+                  if (state.text.answered) return;
+                  handleTextChoice(opt, q);
+              });
+              grid.appendChild(btn);
+          });
+      }
+      state.text.answered = false;
+  }
+  
+  function handleTextChoice(selected, q) {
+      if (state.text.answered) return;
+      state.text.answered = true;
+      const isCorrect = selected === q.answer;
+      const btns = document.querySelectorAll('#textOptionsGrid .option-btn');
+      btns.forEach(btn => {
+          btn.classList.add('disabled');
+          if (btn.dataset.value === q.answer) btn.classList.add('correct');
+          if (btn.dataset.value === selected && !isCorrect) btn.classList.add('wrong');
+      });
+      updateLearning('text', { sentenceId: q.sentenceId, word: q.word }, isCorrect);
+      // 不记录错题
+      const fb = document.getElementById('textFeedback');
+      if (isCorrect) {
+          state.text.totalCorrect++;
+          fb.className = 'feedback show success';
+          document.getElementById('textFeedbackTitle').textContent = '✅ 正确！';
+          document.getElementById('textFeedbackDetail').textContent = '「' + q.word + '」的解释为：' + q.answer;
+      } else {
+          state.text.totalWrong++;
+          fb.className = 'feedback show error';
+          document.getElementById('textFeedbackTitle').textContent = '❌ 不正确';
+          document.getElementById('textFeedbackDetail').textContent = '你的选择：「' + selected + '」\n正确答案：「' + q.answer + '」';
+      }
+      document.getElementById('textNextGroup').style.display = 'flex';
+  }
+  
+  document.getElementById('textFillSubmit').addEventListener('click', function() {
+      if (state.text.answered) return;
+      const q = state.text.questions[state.text.currentIndex];
+      if (!q) return;
+      const input = document.getElementById('textFillInput');
+      const userAns = input.value.trim();
+      if (!userAns) { alert('请输入你的解释'); return; }
+      state.text.answered = true;
+      input.disabled = true;
+      this.disabled = true;
+      const fb = document.getElementById('textFeedback');
+      fb.className = 'feedback show info';
+      document.getElementById('textFeedbackTitle').textContent = '📝 对照标准答案';
+      document.getElementById('textFeedbackDetail').textContent = '你的答案：「' + userAns + '」\n标准答案：「' + q.answer +
+      '」\n请自行判断是否大意相同。';
+      const group = document.getElementById('textNextGroup');
+      group.style.display = 'flex';
+      group.innerHTML = `
+                  <button class="btn btn-success" id="textSelfCorrect">✅ 正确，下一题</button>
+                  <button class="btn btn-danger" id="textSelfWrong">❌ 错误，下一题</button>
+                  <button class="btn btn-outline" id="textFinishBtn">完成</button>
+              `;
+      document.getElementById('textSelfCorrect').addEventListener('click', function() {
+          state.text.totalCorrect++;
+          updateLearning('text', { sentenceId: q.sentenceId, word: q.word }, true);
+          goToTextNext();
+      });
+      document.getElementById('textSelfWrong').addEventListener('click', function() {
+          state.text.totalWrong++;
+          updateLearning('text', { sentenceId: q.sentenceId, word: q.word }, false);
+          goToTextNext();
+      });
+      document.getElementById('textFinishBtn').addEventListener('click', finishTextQuiz);
+  });
+  
+  function goToTextNext() {
+      state.text.currentIndex++;
+      if (state.text.currentIndex >= state.text.questions.length) finishTextQuiz();
+      else renderTextQuestion();
+  }
+  document.getElementById('textNextBtn').addEventListener('click', goToTextNext);
+  document.getElementById('textFinishBtn').addEventListener('click', finishTextQuiz);
+  
+  function finishTextQuiz() {
+      const total = state.text.questions.length;
+      const correct = state.text.totalCorrect;
+      const wrong = state.text.totalWrong;
+      alert('🎉 答题完成！\n正确：' + correct + ' 题\n错误：' + wrong + ' 题\n' + (correct / total * 100).toFixed(0) + '% 正确率');
+      document.getElementById('text-quiz').style.display = 'none';
+      document.getElementById('text-list').style.display = 'block';
+      renderTextList();
+  }
+  
+  // ================================================================
+  //  一词多义模块
+  // ================================================================
+  function getPolyData() { return getMergedPolyData(); }
+  
+  function renderPolyList() {
+      showPage('page-poly');
+      document.getElementById('poly-quiz').style.display = 'none';
+      document.getElementById('poly-list').style.display = 'block';
+      const container = document.getElementById('polyCheckList');
+      container.innerHTML = '';
+      const data = getPolyData();
+      for (const char in data) {
+          const div = document.createElement('div');
+          div.className = 'check-item';
+          if (state.poly.selectedChars.includes(char)) div.classList.add('checked');
+          const count = data[char].meanings.length;
+          let masteredCount = 0,
+              learningCount = 0,
+              newCount = 0;
+          data[char].meanings.forEach(m => {
+              const status = getLearningStatus('poly', { char, meaning: m.meaning });
+              if (!status) newCount++;
+              else if (status.mastered) masteredCount++;
+              else learningCount++;
+          });
+          let statusText = '未学',
+              cls = 'new';
+          if (masteredCount === count) { statusText = '已掌握';
+              cls = 'mastered'; } else if (masteredCount > 0 || learningCount > 0) { statusText = '学习中';
+              cls = 'learning'; }
+          div.innerHTML = `
+                      <input type="checkbox" ${state.poly.selectedChars.includes(char) ? 'checked' : ''} />
+                      <span style="font-size:1.1rem;font-weight:600;">${char}</span>
+                      <span class="count">${count} 义</span>
+                      <span class="status-tag ${cls}" style="margin-left:auto;">${statusText}</span>
+                  `;
+          div.querySelector('input').addEventListener('change', function(e) {
+              e.stopPropagation();
+              if (this.checked) {
+                  if (!state.poly.selectedChars.includes(char)) state.poly.selectedChars.push(char);
+                  div.classList.add('checked');
+              } else {
+                  state.poly.selectedChars = state.poly.selectedChars.filter(c => c !== char);
+                  div.classList.remove('checked');
+              }
+              updatePolySelectCount();
+              document.getElementById('polyStartBtn').disabled = state.poly.selectedChars.length === 0;
+          });
+          div.addEventListener('click', function(e) {
+              if (e.target.tagName !== 'INPUT') {
+                  const cb = this.querySelector('input');
+                  cb.checked = !cb.checked;
+                  cb.dispatchEvent(new Event('change'));
+              }
+          });
+          container.appendChild(div);
+      }
+      document.getElementById('polySelectAll').onclick = function() {
+          state.poly.selectedChars = Object.keys(data);
+          renderPolyList();
+      };
+      document.getElementById('polyDeselectAll').onclick = function() {
+          state.poly.selectedChars = [];
+          renderPolyList();
+      };
+      updatePolySelectCount();
+      document.querySelectorAll('#polyModeSelect .mode-btn').forEach(btn => {
+          btn.classList.remove('active');
+          btn.addEventListener('click', function() {
+              document.querySelectorAll('#polyModeSelect .mode-btn').forEach(b => b.classList.remove('active'));
+              this.classList.add('active');
+              state.poly.mode = this.dataset.mode;
+              document.getElementById('polyStartBtn').disabled = state.poly.selectedChars.length === 0;
+          });
+      });
+      if (state.poly.mode) {
+          document.querySelector(`#polyModeSelect .mode-btn[data-mode="${state.poly.mode}"]`)?.classList.add('active');
+      }
+      document.getElementById('polyStartBtn').disabled = state.poly.selectedChars.length === 0;
+      document.getElementById('polyStartBtn').onclick = startPolyQuiz;
+  }
+  
+  function updatePolySelectCount() {
+      document.getElementById('polySelectedCount').textContent = '已选 ' + state.poly.selectedChars.length + ' 个';
+  }
+  
+  function startPolyQuiz() {
+      const chars = state.poly.selectedChars;
+      if (chars.length === 0) return;
+      const mode = state.poly.mode;
+      if (!mode) return;
+      const data = getPolyData();
+      let questions = [];
+      chars.forEach(char => {
+          const meanings = data[char]?.meanings || [];
+          meanings.forEach(m => {
+              questions.push({ char, example: m.example, meaning: m.meaning, allMeanings: meanings.map(mm => mm
+                      .meaning), module: 'poly', book: m.book || '', title: m.title || '', author: m
+                  .author || '' });
+          });
+      });
+      if (questions.length === 0) return;
+  
+      if (mode === 'note') {
+          document.getElementById('poly-list').style.display = 'none';
+          document.getElementById('poly-quiz').style.display = 'block';
+          document.getElementById('polyQuizTitle').textContent = '📝 笔记 · 一词多义';
+          document.getElementById('polyProgress').textContent = '分组浏览';
+          document.getElementById('polyProgressFill').style.width = '100%';
+          document.getElementById('polyFillArea').style.display = 'none';
+          document.getElementById('polyChoiceArea').style.display = 'none';
+          document.getElementById('polyNextGroup').style.display = 'none';
+          document.getElementById('polyFeedback').classList.remove('show');
+          const noteArea = document.getElementById('polyNoteArea');
+          noteArea.style.display = 'block';
+          const container = document.getElementById('polyNoteContainer');
+          container.innerHTML = '';
+          const groupedByChar = {};
+          questions.forEach(q => {
+              if (!groupedByChar[q.char]) groupedByChar[q.char] = [];
+              groupedByChar[q.char].push(q);
+          });
+          for (const char in groupedByChar) {
+              const items = groupedByChar[char];
+              const meaningMap = {};
+              items.forEach(q => {
+                  const key = q.meaning;
+                  if (!meaningMap[key]) meaningMap[key] = [];
+                  meaningMap[key].push(q);
+              });
+              const card = document.createElement('div');
+              card.className = 'note-card';
+              card.style.borderLeftColor = '#2a5a6e';
+              let bodyHtml = `<div class="note-title">🔤 ${char}</div>`;
+              for (const meaning in meaningMap) {
+                  const examples = meaningMap[meaning];
+                  bodyHtml += `<div class="meaning-group">`;
+                  bodyHtml += `<div class="meaning-head"><span class="arrow">▶</span> ${meaning}</div>`;
+                  bodyHtml += `<ul class="example-list">`;
+                  examples.forEach((q, idx) => {
+                      const highlighted = q.example.replace(new RegExp(q.char, 'g'),
+                          `<span class="highlight">${q.char}</span>`);
+                      const source = formatSource(q.book, q.title, q.author);
+                      bodyHtml += `<li>${highlighted} <span class="source"><span class="book">${source}</span></span></li>`;
+                  });
+                  bodyHtml += `</ul></div>`;
+              }
+              card.innerHTML = bodyHtml;
+              container.appendChild(card);
+              const uniqueMeanings = Object.keys(meaningMap);
+              uniqueMeanings.forEach(m => {
+                  const q = items.find(it => it.meaning === m);
+                  if (q) updateLearning('poly', { char, meaning: m }, true);
+              });
+          }
+          document.getElementById('polyNoteBackBtn').onclick = function() {
+              document.getElementById('poly-quiz').style.display = 'none';
+              document.getElementById('poly-list').style.display = 'block';
+              renderPolyList();
+          };
+          return;
+      }
+  
+      state.poly.questions = shuffle(questions);
+      state.poly.currentIndex = 0;
+      state.poly.answered = false;
+      state.poly.totalCorrect = 0;
+      state.poly.totalWrong = 0;
+      document.getElementById('poly-list').style.display = 'none';
+      document.getElementById('poly-quiz').style.display = 'block';
+      document.getElementById('polyQuizTitle').textContent = '一词多义 · 共 ' + state.poly.questions.length + ' 题';
+      document.getElementById('polyNoteArea').style.display = 'none';
+      if (mode === 'fill') {
+          document.getElementById('polyFillArea').style.display = 'block';
+          document.getElementById('polyChoiceArea').style.display = 'none';
+      } else {
+          document.getElementById('polyFillArea').style.display = 'none';
+          document.getElementById('polyChoiceArea').style.display = 'block';
+      }
+      document.getElementById('polyFeedback').classList.remove('show', 'success', 'error', 'info');
+      document.getElementById('polyNextGroup').style.display = 'none';
+      document.getElementById('polyFillInput').disabled = false;
+      document.getElementById('polyFillInput').value = '';
+      document.getElementById('polyFillSubmit').disabled = false;
+      renderPolyQuestion();
+  }
+  
+  function renderPolyQuestion() {
+      const qs = state.poly.questions;
+      const idx = state.poly.currentIndex;
+      if (idx >= qs.length) { finishPolyQuiz(); return; }
+      const q = qs[idx];
+      document.getElementById('polyProgress').textContent = (idx + 1) + ' / ' + qs.length;
+      document.getElementById('polyProgressFill').style.width = ((idx) / qs.length * 100) + '%';
+      let html = q.example;
+      if (q.char) html = html.replace(new RegExp(q.char, 'g'), `<span class="highlight">${q.char}</span>`);
+      document.getElementById('polyQuestionText').innerHTML = html;
+      document.getElementById('polyQuestionHint').textContent = '解释「' + q.char + '」在句中的含义';
+      document.getElementById('polyFillInput').value = '';
+      document.getElementById('polyFillInput').disabled = false;
+      document.getElementById('polyFillSubmit').disabled = false;
+      document.getElementById('polyFeedback').classList.remove('show', 'success', 'error', 'info');
+      document.getElementById('polyNextGroup').style.display = 'none';
+  
+      // 收藏按钮
+      const questionId = getQuestionId('poly', { char: q.char, meaning: q.meaning });
+      const starBtn = document.getElementById('polyStarToggle');
+      starBtn.textContent = isFavorited(questionId) ? '★' : '☆';
+      starBtn.className = 'star-toggle' + (isFavorited(questionId) ? ' favorited' : '');
+      starBtn.onclick = function() {
+          const fav = toggleFavorite(questionId, 'poly', q.example, q.meaning, 'poly', { char: q.char });
+          this.textContent = fav ? '★' : '☆';
+          this.classList.toggle('favorited', fav);
+          updateHomeBadges();
+      };
+  
+      if (state.poly.mode === 'choice') {
+          const options = generateOptions(q.meaning, q.allMeanings);
+          const grid = document.getElementById('polyOptionsGrid');
+          grid.innerHTML = '';
+          const labels = ['A', 'B', 'C', 'D'];
+          options.forEach((opt, i) => {
+              const btn = document.createElement('button');
+              btn.className = 'option-btn';
+              btn.innerHTML = `<span class="tag">${labels[i]}</span> ${opt}`;
+              btn.dataset.value = opt;
+              btn.addEventListener('click', function() {
+                  if (state.poly.answered) return;
+                  handlePolyChoice(opt, q);
+              });
+              grid.appendChild(btn);
+          });
+      }
+      state.poly.answered = false;
+  }
+  
+  function handlePolyChoice(selected, q) {
+      if (state.poly.answered) return;
+      state.poly.answered = true;
+      const isCorrect = selected === q.meaning;
+      const btns = document.querySelectorAll('#polyOptionsGrid .option-btn');
+      btns.forEach(btn => {
+          btn.classList.add('disabled');
+          if (btn.dataset.value === q.meaning) btn.classList.add('correct');
+          if (btn.dataset.value === selected && !isCorrect) btn.classList.add('wrong');
+      });
+      updateLearning('poly', { char: q.char, meaning: q.meaning }, isCorrect);
+      const fb = document.getElementById('polyFeedback');
+      if (isCorrect) {
+          state.poly.totalCorrect++;
+          fb.className = 'feedback show success';
+          document.getElementById('polyFeedbackTitle').textContent = '✅ 正确！';
+          document.getElementById('polyFeedbackDetail').textContent = '「' + q.char + '」在此处意为：' + q.meaning;
+      } else {
+          state.poly.totalWrong++;
+          fb.className = 'feedback show error';
+          document.getElementById('polyFeedbackTitle').textContent = '❌ 不正确';
+          document.getElementById('polyFeedbackDetail').textContent = '你的选择：「' + selected + '」\n正确答案：「' + q.meaning + '」';
+      }
+      document.getElementById('polyNextGroup').style.display = 'flex';
+  }
+  
+  document.getElementById('polyFillSubmit').addEventListener('click', function() {
+      if (state.poly.answered) return;
+      const q = state.poly.questions[state.poly.currentIndex];
+      if (!q) return;
+      const input = document.getElementById('polyFillInput');
+      const userAns = input.value.trim();
+      if (!userAns) { alert('请输入你的解释'); return; }
+      state.poly.answered = true;
+      input.disabled = true;
+      this.disabled = true;
+      const fb = document.getElementById('polyFeedback');
+      fb.className = 'feedback show info';
+      document.getElementById('polyFeedbackTitle').textContent = '📝 对照标准答案';
+      document.getElementById('polyFeedbackDetail').textContent = '你的答案：「' + userAns + '」\n标准答案：「' + q.meaning +
+      '」\n请自行判断是否大意相同。';
+      const group = document.getElementById('polyNextGroup');
+      group.style.display = 'flex';
+      group.innerHTML = `
+                  <button class="btn btn-success" id="polySelfCorrect">✅ 正确，下一题</button>
+                  <button class="btn btn-danger" id="polySelfWrong">❌ 错误，下一题</button>
+                  <button class="btn btn-outline" id="polyFinishBtn">完成</button>
+              `;
+      document.getElementById('polySelfCorrect').addEventListener('click', function() {
+          state.poly.totalCorrect++;
+          updateLearning('poly', { char: q.char, meaning: q.meaning }, true);
+          goToPolyNext();
+      });
+      document.getElementById('polySelfWrong').addEventListener('click', function() {
+          state.poly.totalWrong++;
+          updateLearning('poly', { char: q.char, meaning: q.meaning }, false);
+          goToPolyNext();
+      });
+      document.getElementById('polyFinishBtn').addEventListener('click', finishPolyQuiz);
+  });
+  
+  function goToPolyNext() {
+      state.poly.currentIndex++;
+      if (state.poly.currentIndex >= state.poly.questions.length) finishPolyQuiz();
+      else renderPolyQuestion();
+  }
+  document.getElementById('polyNextBtn').addEventListener('click', goToPolyNext);
+  document.getElementById('polyFinishBtn').addEventListener('click', finishPolyQuiz);
+  
+  function finishPolyQuiz() {
+      const total = state.poly.questions.length;
+      const correct = state.poly.totalCorrect;
+      const wrong = state.poly.totalWrong;
+      alert('🎉 答题完成！\n正确：' + correct + ' 题\n错误：' + wrong + ' 题\n' + (correct / total * 100).toFixed(0) + '% 正确率');
+      document.getElementById('poly-quiz').style.display = 'none';
+      document.getElementById('poly-list').style.display = 'block';
+      renderPolyList();
+  }
+  
+  // ================================================================
+  //  我的收藏页面
+  // ================================================================
+  function renderFavoritesPage() {
+      const container = document.getElementById('favoritesContainer');
+      container.innerHTML = '';
+      const favs = getFavorites();
+      if (favs.length === 0) {
+          container.innerHTML =
+              `<div class="empty-state"><div class="big-icon">⭐</div><p style="font-size:1.1rem;">暂无收藏</p><p style="color:var(--text-light);">在答题时点击星星即可收藏</p></div>`;
+          return;
+      }
+      const groups = {};
+      favs.forEach(f => {
+          const d = new Date(f.time);
+          const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate())
+              .padStart(2, '0');
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(f);
+      });
+      const sortedDates = Object.keys(groups).sort((a, b) => b.localeCompare(a));
+      sortedDates.forEach(date => {
+          const groupDiv = document.createElement('div');
+          groupDiv.className = 'favorite-group';
+          const header = document.createElement('div');
+          header.className = 'favorite-group-header';
+          const ungrad = groups[date].filter(f => !f.graduated).length;
+          const grad = groups[date].filter(f => f.graduated).length;
+          header.innerHTML =
+              `<span>📅 ${date}（${groups[date].length} 项，未毕业 ${ungrad}，已毕业 ${grad}）</span><span class="arrow">▼</span>`;
+          header.addEventListener('click', function() {
+              const body = this.nextElementSibling;
+              const arrow = this.querySelector('.arrow');
+              body.classList.toggle('open');
+              arrow.classList.toggle('open');
+          });
+          groupDiv.appendChild(header);
+          const body = document.createElement('div');
+          body.className = 'favorite-group-body';
+          const sortedItems = [...groups[date].filter(f => !f.graduated), ...groups[date].filter(f => f.graduated)];
+          sortedItems.forEach(f => {
+              const item = createFavoriteItem(f);
+              body.appendChild(item);
+          });
+          groupDiv.appendChild(body);
+          container.appendChild(groupDiv);
+      });
+      document.getElementById('favBackBtn').onclick = () => showPage('page-home');
+  }
+  
+  function createFavoriteItem(fav) {
+      const div = document.createElement('div');
+      div.className = 'favorite-item' + (fav.graduated ? ' graduated' : '');
+      let detail = '';
+      if (fav.module === 'text') detail = '📜 ' + (fav.extra?.textName || '课文') + ' · ' + (fav.extra?.word || '');
+      else if (fav.module === 'poly') detail = '🔤 「' + (fav.extra?.char || '') + '」';
+      else detail = '📌 ' + (fav.module || '');
+      div.innerHTML = `
+                  <div class="fi-header">
+                      <div class="fi-question">${fav.question || '(题目缺失)'}</div>
+                      <div style="display:flex;gap:6px;align-items:center;">
+                          <span class="credit-badge">学分 ${fav.credit || 0}</span>
+                          ${fav.graduated ? '<span class="graduated-tag">已毕业</span>' : ''}
+                      </div>
+                  </div>
+                  <div class="fi-meta">
+                      <span>${detail}</span>
+                      <span>${fav.type || ''}</span>
+                      <span>${new Date(fav.time).toLocaleDateString()}</span>
+                  </div>
+                  <div class="fi-actions">
+                      <button class="star-btn" data-id="${fav.questionId}" title="取消收藏">⭐</button>
+                      ${fav.graduated ? `<button class="btn-sm" data-id="${fav.questionId}" data-action="reset">🔄 重置学分</button>` : ''}
+                      <span style="font-size:0.8rem;color:var(--text-light);margin-left:auto;">${fav.graduated ? '已毕业' : '学分 '+fav.credit+'/3'}</span>
+                  </div>
+              `;
+      div.querySelector('.star-btn').addEventListener('click', function() {
+          const id = this.dataset.id;
+          if (confirm('确定要取消收藏这道题吗？')) {
+              removeFavorite(id);
+              renderFavoritesPage();
+              updateHomeBadges();
+          }
+      });
+      const resetBtn = div.querySelector('[data-action="reset"]');
+      if (resetBtn) {
+          resetBtn.addEventListener('click', function() {
+              const id = this.dataset.id;
+              if (confirm('重置学分将归零并取消毕业状态，确定吗？')) {
+                  resetCredit(id);
+                  renderFavoritesPage();
+                  updateHomeBadges();
+              }
+          });
+      }
+      return div;
+  }
+  
+  // ================================================================
+  //  刷收藏题页面
+  // ================================================================
+  function renderReviewFavList() {
+      const container = document.getElementById('reviewFavSelectArea');
+      container.innerHTML = '';
+      const favs = getFavorites().filter(f => !f.graduated);
+      if (favs.length === 0) {
+          container.innerHTML =
+              `<div class="empty-state"><div class="big-icon">🎉</div><p>暂无未毕业的收藏题</p></div>`;
+          document.getElementById('reviewFavStartBtn').disabled = true;
+          return;
+      }
+      const groups = {};
+      favs.forEach(f => {
+          const d = new Date(f.time);
+          const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate())
+              .padStart(2, '0');
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(f);
+      });
+      const sortedDates = Object.keys(groups).sort((a, b) => b.localeCompare(a));
+      sortedDates.forEach(date => {
+          const groupDiv = document.createElement('div');
+          groupDiv.className = 'favorite-group';
+          const header = document.createElement('div');
+          header.className = 'favorite-group-header';
+          const dateCheckbox = document.createElement('input');
+          dateCheckbox.type = 'checkbox';
+          dateCheckbox.style.width = '18px';
+          dateCheckbox.style.height = '18px';
+          dateCheckbox.style.accentColor = 'var(--accent)';
+          dateCheckbox.dataset.date = date;
+          dateCheckbox.addEventListener('change', function() {
+              const items = groupDiv.querySelectorAll('.review-select-item input[type="checkbox"]');
+              items.forEach(cb => cb.checked = this.checked);
+              updateReviewFavStartBtn();
+          });
+          header.innerHTML = `<span>📅 ${date}（${groups[date].length} 题）</span>`;
+          header.prepend(dateCheckbox);
+          header.style.display = 'flex';
+          header.style.gap = '12px';
+          header.style.alignItems = 'center';
+          header.addEventListener('click', function(e) {
+              if (e.target.tagName !== 'INPUT') {
+                  const body = this.nextElementSibling;
+                  const arrow = this.querySelector('.arrow');
+                  body.classList.toggle('open');
+                  if (arrow) arrow.classList.toggle('open');
+              }
+          });
+          const arrowSpan = document.createElement('span');
+          arrowSpan.className = 'arrow';
+          arrowSpan.textContent = '▼';
+          header.appendChild(arrowSpan);
+          groupDiv.appendChild(header);
+          const body = document.createElement('div');
+          body.className = 'favorite-group-body';
+          groups[date].forEach(f => {
+              const itemDiv = document.createElement('div');
+              itemDiv.className = 'review-select-item';
+              const cb = document.createElement('input');
+              cb.type = 'checkbox';
+              cb.dataset.id = f.questionId;
+              cb.addEventListener('change', function() { updateReviewFavStartBtn(); });
+              const label = document.createElement('span');
+              label.className = 'rs-question';
+              label.textContent = f.question;
+              const meta = document.createElement('span');
+              meta.className = 'rs-meta';
+              let detail = '';
+              if (f.module === 'text') detail = '📜 ' + (f.extra?.textName || '') + ' · ' + (f.extra?.word || '');
+              else if (f.module === 'poly') detail = '🔤 「' + (f.extra?.char || '') + '」';
+              meta.textContent = detail + ' 学分 ' + f.credit;
+              itemDiv.appendChild(cb);
+              itemDiv.appendChild(label);
+              itemDiv.appendChild(meta);
+              body.appendChild(itemDiv);
+          });
+          groupDiv.appendChild(body);
+          container.appendChild(groupDiv);
+      });
+  
+      function updateReviewFavStartBtn() {
+          const checked = document.querySelectorAll('#reviewFavSelectArea input[type="checkbox"]:checked');
+          document.getElementById('reviewFavStartBtn').disabled = checked.length === 0;
+      }
+      updateReviewFavStartBtn();
+  
+      document.getElementById('reviewFavStartBtn').onclick = startReviewFavQuiz;
+      document.getElementById('reviewFavBackBtn').onclick = () => showPage('page-home');
+      
+         // 绑定模式切换
+    document.querySelectorAll('#reviewFavModeSelect .mode-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('#reviewFavModeSelect .mode-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            state.reviewFav.mode = this.dataset.mode;
+        });
+    });
+    const defaultMode = state.reviewFav.mode || 'choice';
+    document.querySelector(`#reviewFavModeSelect .mode-btn[data-mode="${defaultMode}"]`)?.classList.add('active');
+      
+  }
+  
+  function startReviewFavQuiz() {
+      const checkedCbs = document.querySelectorAll('#reviewFavSelectArea input[type="checkbox"]:checked');
+      const ids = Array.from(checkedCbs).map(cb => cb.dataset.id);
+      if (ids.length === 0) return;
+      const favs = getFavorites();
+      const selected = favs.filter(f => ids.includes(f.questionId) && !f.graduated);
+      if (selected.length === 0) { alert('所选题目已毕业或不存在'); return; }
+      let questions = selected.map(f => ({
+          questionId: f.questionId,
+          module: f.module,
+          question: f.question,
+          answer: f.answer,
+          type: f.type,
+          extra: f.extra || {}
+      }));
+      state.reviewFav.questions = shuffle(questions);
+      state.reviewFav.currentIndex = 0;
+      state.reviewFav.answered = false;
+      state.reviewFav.totalCorrect = 0;
+      state.reviewFav.totalWrong = 0;
+      document.getElementById('reviewFavList').style.display = 'none';
+      document.getElementById('reviewFavQuiz').style.display = 'block';
+      const mode = state.reviewFav.mode || 'choice';
+    if (mode === 'fill') {
+        document.getElementById('reviewFavFillArea').style.display = 'block';
+        document.getElementById('reviewFavChoiceArea').style.display = 'none';
+    } else {
+        document.getElementById('reviewFavFillArea').style.display = 'none';
+        document.getElementById('reviewFavChoiceArea').style.display = 'block';
+    }
+      document.getElementById('reviewFavFeedback').classList.remove('show');
+      document.getElementById('reviewFavNextGroup').style.display = 'none';
+      renderReviewFavQuestion();
+  }
+  
+function renderReviewFavQuestion() {
+    const qs = state.reviewFav.questions;
+    const idx = state.reviewFav.currentIndex;
+    if (idx >= qs.length) { finishReviewFavQuiz(); return; }
+    const q = qs[idx];
+    document.getElementById('reviewFavProgress').textContent = (idx + 1) + ' / ' + qs.length;
+    document.getElementById('reviewFavProgressFill').style.width = (idx / qs.length * 100) + '%';
+
+    let displayText = q.question;
+    let highlightWord = q.extra?.word || q.extra?.char;
+    if (!highlightWord && q.questionId) {
+        const parts = q.questionId.split('_');
+        if (q.module === 'text' && parts.length >= 3) {
+            highlightWord = parts[parts.length - 1];
+        } else if (q.module === 'poly' && parts.length >= 2) {
+            highlightWord = parts[1];
+        }
+    }
+    if (highlightWord) {
+        const regex = new RegExp(highlightWord, 'g');
+        displayText = displayText.replace(regex, `<span class="highlight">${highlightWord}</span>`);
+    }
+    document.getElementById('reviewFavQuestionText').innerHTML = displayText;
+
+    let wordToExplain = q.extra?.word || q.extra?.char;
+    if (!wordToExplain && q.questionId) {
+        const parts = q.questionId.split('_');
+        if (q.module === 'text' && parts.length >= 3) {
+            wordToExplain = parts[parts.length - 1];
+        } else if (q.module === 'poly' && parts.length >= 2) {
+            wordToExplain = parts[1];
+        }
+    }
+    if (wordToExplain) {
+        document.getElementById('reviewFavQuestionHint').textContent = `请解释「${wordToExplain}」在句中的意思`;
+    } else {
+        document.getElementById('reviewFavQuestionHint').textContent = '请解释句中划线词语的意思';
+    }
+
+    const mode = state.reviewFav.mode || 'choice';
+    if (mode === 'fill') {
+        document.getElementById('reviewFavFillArea').style.display = 'block';
+        document.getElementById('reviewFavChoiceArea').style.display = 'none';
+        document.getElementById('reviewFavFillInput').value = '';
+        document.getElementById('reviewFavFillInput').disabled = false;
+        document.getElementById('reviewFavFillSubmit').disabled = false;
+        document.getElementById('reviewFavFillSubmit').onclick = function() {
+            if (state.reviewFav.answered) return;
+            const q = state.reviewFav.questions[state.reviewFav.currentIndex];
+            if (!q) return;
+            const input = document.getElementById('reviewFavFillInput');
+            const userAns = input.value.trim();
+            if (!userAns) { alert('请输入你的解释'); return; }
+            state.reviewFav.answered = true;
+            input.disabled = true;
+            this.disabled = true;
+            const fb = document.getElementById('reviewFavFeedback');
+            fb.className = 'feedback show info';
+            document.getElementById('reviewFavFeedbackTitle').textContent = '📝 对照标准答案';
+            document.getElementById('reviewFavFeedbackDetail').textContent = '你的答案：「' + userAns + '」\n标准答案：「' + q.answer + '」\n请自行判断是否大意相同。';
+            const group = document.getElementById('reviewFavNextGroup');
+            group.style.display = 'flex';
+            group.innerHTML = `
+                <button class="btn btn-success" id="reviewFavSelfCorrect">✅ 正确，下一题</button>
+                <button class="btn btn-danger" id="reviewFavSelfWrong">❌ 错误，下一题</button>
+                <button class="btn btn-outline" id="reviewFavFinishBtn">完成</button>
+            `;
+            document.getElementById('reviewFavSelfCorrect').addEventListener('click', function() {
+                updateCredit(q.questionId, 1);
+                state.reviewFav.totalCorrect++;
+                goToReviewFavNext();
+            });
+            document.getElementById('reviewFavSelfWrong').addEventListener('click', function() {
+                updateCredit(q.questionId, -1);
+                state.reviewFav.totalWrong++;
+                goToReviewFavNext();
+            });
+            document.getElementById('reviewFavFinishBtn').addEventListener('click', finishReviewFavQuiz);
+        };
+    } else {
+        document.getElementById('reviewFavFillArea').style.display = 'none';
+        document.getElementById('reviewFavChoiceArea').style.display = 'block';
+        const allFavs = getFavorites();
+        const answerPool = allFavs.map(f => f.answer).filter(a => a && a.trim() !== '');
+        const options = generateOptions(q.answer, answerPool);
+        const grid = document.getElementById('reviewFavOptionsGrid');
+        grid.innerHTML = '';
+        const labels = ['A', 'B', 'C', 'D'];
+        options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="tag">${labels[i]}</span> ${opt}`;
+            btn.dataset.value = opt;
+            btn.addEventListener('click', function() {
+                if (state.reviewFav.answered) return;
+                handleReviewFavChoice(opt, q);
+            });
+            grid.appendChild(btn);
+        });
+    }
+
+    state.reviewFav.answered = false;
+    document.getElementById('reviewFavFeedback').classList.remove('show');
+    document.getElementById('reviewFavNextGroup').style.display = 'none';
+}
+  
+  function handleReviewFavChoice(selected, q) {
+      if (state.reviewFav.answered) return;
+      state.reviewFav.answered = true;
+      const isCorrect = selected === q.answer;
+      const btns = document.querySelectorAll('#reviewFavOptionsGrid .option-btn');
+      btns.forEach(btn => {
+          btn.classList.add('disabled');
+          if (btn.dataset.value === q.answer) btn.classList.add('correct');
+          if (btn.dataset.value === selected && !isCorrect) btn.classList.add('wrong');
+      });
+      const delta = isCorrect ? 1 : -1;
+      const updated = updateCredit(q.questionId, delta);
+      const fb = document.getElementById('reviewFavFeedback');
+      if (isCorrect) {
+          state.reviewFav.totalCorrect++;
+          fb.className = 'feedback show success';
+          document.getElementById('reviewFavFeedbackTitle').textContent = '✅ 正确！学分 +1';
+          document.getElementById('reviewFavFeedbackDetail').textContent = '当前学分：' + (updated ? updated.credit : '?');
+      } else {
+          state.reviewFav.totalWrong++;
+          fb.className = 'feedback show error';
+          document.getElementById('reviewFavFeedbackTitle').textContent = '❌ 不正确，学分 -1';
+          document.getElementById('reviewFavFeedbackDetail').textContent = '正确答案：' + q.answer + '，当前学分：' + (updated ?
+              updated.credit : '?');
+      }
+      document.getElementById('reviewFavNextGroup').style.display = 'flex';
+  }
+  
+  document.getElementById('reviewFavNextBtn').addEventListener('click', function() {
+      state.reviewFav.currentIndex++;
+      if (state.reviewFav.currentIndex >= state.reviewFav.questions.length) finishReviewFavQuiz();
+      else renderReviewFavQuestion();
+  });
+  document.getElementById('reviewFavFinishBtn').addEventListener('click', finishReviewFavQuiz);
+  
+  function goToReviewFavNext() {
+    state.reviewFav.currentIndex++;
+    if (state.reviewFav.currentIndex >= state.reviewFav.questions.length) finishReviewFavQuiz();
+    else renderReviewFavQuestion();
+}
+  
+  function finishReviewFavQuiz() {
+      const total = state.reviewFav.questions.length;
+      const correct = state.reviewFav.totalCorrect;
+      const wrong = state.reviewFav.totalWrong;
+      alert('🎉 刷题完成！\n正确：' + correct + ' 题\n错误：' + wrong + ' 题\n' + (correct / total * 100).toFixed(0) + '% 正确率');
+      document.getElementById('reviewFavQuiz').style.display = 'none';
+      document.getElementById('reviewFavList').style.display = 'block';
+      renderReviewFavList();
+      updateHomeBadges();
+  }
+  
+  // ================================================================
+  //  自定义笔记
+  // ================================================================
+  function renderCustomPage() {
+      showPage('page-custom');
+      renderCustomList();
+      document.getElementById('addTargetBtn').onclick = function() {
+          const container = document.getElementById('customTargetsContainer');
+          const group = document.createElement('div');
+          group.className = 'custom-target-group';
+          group.innerHTML = `
+                      <div class="target-row">
+                          <input type="text" class="custom-target-word" placeholder="重点词" />
+                          <input type="text" class="custom-target-answer" placeholder="释义" />
+                          <button class="del-target-btn">✕</button>
+                      </div>
+                  `;
+          group.querySelector('.del-target-btn').addEventListener('click', function() {
+              group.remove();
+          });
+          container.appendChild(group);
+      };
+      const groups = document.querySelectorAll('#customTargetsContainer .custom-target-group');
+      groups.forEach((g, i) => {
+          const delBtn = g.querySelector('.del-target-btn');
+          if (i === 0) delBtn.style.display = 'none';
+          else delBtn.style.display = 'block';
+          delBtn.addEventListener('click', function() { g.remove(); });
+      });
+  }
+  
+  function renderCustomList() {
+      const custom = loadCustom();
+      const container = document.getElementById('customList');
+      container.innerHTML = '';
+      let hasItems = false;
+      for (const name in custom.texts) {
+          const sentences = custom.texts[name].sentences || [];
+          sentences.forEach((s, idx) => {
+              hasItems = true;
+              const div = document.createElement('div');
+              div.className = 'custom-item';
+              const targetsStr = (s.targets || []).map(t => `${t.word}(${t.answer})`).join('；');
+              div.innerHTML = `
+                          <div class="info"><strong>📜 ${name}</strong> ｜ ${s.text} ｜ 重点：${targetsStr}</div>
+                          <button class="del-btn" data-type="text" data-name="${name}" data-idx="${idx}">✕</button>
+                      `;
+              container.appendChild(div);
+          });
+      }
+      for (const char in custom.polys) {
+          const meanings = custom.polys[char].meanings || [];
+          meanings.forEach((m, idx) => {
+              hasItems = true;
+              const source = formatSource(m.book, m.title, m.author);
+              const div = document.createElement('div');
+              div.className = 'custom-item';
+              div.innerHTML = `
+                          <div class="info"><strong>🔤 ${char}</strong> ｜ 义项：${m.meaning} ｜ 例句：${m.example} ｜ 出处：${source}</div>
+                          <button class="del-btn" data-type="poly" data-char="${char}" data-idx="${idx}">✕</button>
+                      `;
+              container.appendChild(div);
+          });
+      }
+      if (!hasItems) {
+          container.innerHTML =
+              `<div class="empty-state"><div class="big-icon">📭</div><p style="font-size:1rem;">暂无自定义内容</p></div>`;
+      }
+      document.querySelectorAll('#customList .del-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+              const type = this.dataset.type;
+              const name = this.dataset.name;
+              const char = this.dataset.char;
+              const idx = parseInt(this.dataset.idx);
+              const custom = loadCustom();
+              if (type === 'text') {
+                  if (custom.texts[name]) {
+                      custom.texts[name].sentences.splice(idx, 1);
+                      if (custom.texts[name].sentences.length === 0) delete custom.texts[name];
+                  }
+              } else {
+                  if (custom.polys[char]) {
+                      custom.polys[char].meanings.splice(idx, 1);
+                      if (custom.polys[char].meanings.length === 0) delete custom.polys[char];
+                  }
+              }
+              saveCustom(custom);
+              renderCustomList();
+          });
+      });
+  }
+  
+  document.getElementById('customTextAdd').addEventListener('click', function() {
+      const name = document.getElementById('customTextName').value.trim();
+      const sentence = document.getElementById('customTextSentence').value.trim();
+      if (!name || !sentence) { alert('请填写课文名和句子'); return; }
+      const targetGroups = document.querySelectorAll('#customTargetsContainer .custom-target-group');
+      let targets = [];
+      targetGroups.forEach(g => {
+          const word = g.querySelector('.custom-target-word').value.trim();
+          const answer = g.querySelector('.custom-target-answer').value.trim();
+          if (word && answer) targets.push({ word, answer });
+      });
+      if (targets.length === 0) { alert('请添加至少一个重点词'); return; }
+      const custom = loadCustom();
+      if (!custom.texts[name]) custom.texts[name] = { sentences: [] };
+      const dup = custom.texts[name].sentences.some(s => s.text === sentence && JSON.stringify(s.targets) === JSON
+          .stringify(targets));
+      if (dup) { alert('该句子已存在'); return; }
+      custom.texts[name].sentences.push({ id: 'custom_' + Date.now() + Math.random().toString(36).slice(2, 6),
+          text: sentence, targets });
+      saveCustom(custom);
+      document.getElementById('customTextName').value = '';
+      document.getElementById('customTextSentence').value = '';
+      const container = document.getElementById('customTargetsContainer');
+      container.innerHTML = `
+                  <div class="custom-target-group">
+                      <div class="target-row">
+                          <input type="text" class="custom-target-word" placeholder="重点词" />
+                          <input type="text" class="custom-target-answer" placeholder="释义" />
+                          <button class="del-target-btn" style="display:none;">✕</button>
+                      </div>
+                  </div>
+              `;
+      renderCustomList();
+      alert('✅ 课文添加成功！');
+  });
+  
+  document.getElementById('customPolyAdd').addEventListener('click', function() {
+      const char = document.getElementById('customPolyChar').value.trim();
+      const meaning = document.getElementById('customPolyMeaning').value.trim();
+      const example = document.getElementById('customPolyExample').value.trim();
+      const book = document.getElementById('customPolyBook').value.trim();
+      const title = document.getElementById('customPolyTitle').value.trim();
+      const author = document.getElementById('customPolyAuthor').value.trim();
+      if (!char || !meaning || !example) { alert('请填写字词、义项和例句'); return; }
+      const custom = loadCustom();
+      if (!custom.polys[char]) custom.polys[char] = { meanings: [] };
+      const dup = custom.polys[char].meanings.some(m => m.meaning === meaning && m.example === example);
+      if (dup) { alert('该义项已存在'); return; }
+      custom.polys[char].meanings.push({ meaning, example, book, title, author });
+      saveCustom(custom);
+      document.getElementById('customPolyChar').value = '';
+      document.getElementById('customPolyMeaning').value = '';
+      document.getElementById('customPolyExample').value = '';
+      document.getElementById('customPolyBook').value = '';
+      document.getElementById('customPolyTitle').value = '';
+      document.getElementById('customPolyAuthor').value = '';
+      renderCustomList();
+      alert('✅ 一词多义添加成功！');
+  });
+  
+  document.getElementById('customClearAll').addEventListener('click', function() {
+      if (confirm('确定清空所有自定义内容？')) {
+          saveCustom({ texts: {}, polys: {} });
+          renderCustomList();
+          alert('已清空');
+      }
+  });
+  
+  // ================================================================
+  //  数据导出导入（含收藏）
+  // ================================================================
+  document.getElementById('exportDataBtn')?.addEventListener('click', function() {
+      const data = {
+          learning: localStorage.getItem(STORAGE_KEY),
+          custom: localStorage.getItem(CUSTOM_STORAGE_KEY),
+          settings: localStorage.getItem(SETTINGS_KEY),
+          favorites: localStorage.getItem(FAVORITE_KEY),
+          version: '1.0',
+          exportTime: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `buwenyan_backup_${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+  });
+  
+  document.getElementById('importDataBtn')?.addEventListener('click', function() {
+      document.getElementById('importFileInput')?.click();
+  });
+  
+  document.getElementById('importFileInput')?.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+          try {
+              const data = JSON.parse(ev.target.result);
+              if (data.learning) localStorage.setItem(STORAGE_KEY, data.learning);
+              if (data.custom) localStorage.setItem(CUSTOM_STORAGE_KEY, data.custom);
+              if (data.settings) localStorage.setItem(SETTINGS_KEY, data.settings);
+              if (data.favorites) localStorage.setItem(FAVORITE_KEY, data.favorites);
+              alert('✅ 数据导入成功！页面将自动刷新。');
+              location.reload();
+          } catch (err) {
+              alert('❌ 文件格式错误，请选择正确的备份文件（.json）。');
+          }
+      };
+      reader.readAsText(file);
+      this.value = '';
+  });
+  
+  // ================================================================
+  //  设置面板
+  // ================================================================
+  const settingsOverlay = document.getElementById('settingsOverlay');
+  const settingsToggle = document.getElementById('settingsToggle');
+  const settingsClose = document.getElementById('settingsClose');
+  const settingsApply = document.getElementById('settingsApply');
+  let currentSettings = loadSettings();
+  
+  function openSettings() {
+      settingsOverlay.classList.add('open');
+      document.querySelectorAll('.color-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.theme === currentSettings.theme);
+      });
+      document.querySelectorAll('.font-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.size === currentSettings.fontSize);
+      });
+  }
+  
+  function closeSettings() { settingsOverlay.classList.remove('open'); }
+  
+  settingsToggle.addEventListener('click', openSettings);
+  settingsClose.addEventListener('click', closeSettings);
+  settingsOverlay.addEventListener('click', function(e) { if (e.target === this) closeSettings(); });
+  
+  document.querySelectorAll('.color-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+          document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentSettings.theme = this.dataset.theme;
+      });
+  });
+  document.querySelectorAll('.font-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+          document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentSettings.fontSize = this.dataset.size;
+      });
+  });
+  settingsApply.addEventListener('click', function() {
+      applySettings(currentSettings);
+      saveSettings(currentSettings);
+      closeSettings();
+  });
+  applySettings(currentSettings);
+  
+  // ================================================================
+  //  初始化
+  // ================================================================
+  updateHomeBadges();
+  showPage('page-home');
+  console.log('📖 不背文言 完整版（含收藏与刷题）已启动');
+ </script>
+</body>
+
+</html>
