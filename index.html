@@ -135,6 +135,8 @@
   .progress-bar { flex: 1; height: 5px; background: #e8e4de; border-radius: 10px; overflow: hidden; }
   .progress-bar .fill { height: 100%; background: var(--accent); border-radius: 10px; transition: width 0.3s ease; width: 0%; }
   .question-text { font-size: 1.25rem; line-height: 1.8; padding: 20px 24px; background: var(--bg); border-radius: var(--radius-sm); margin-bottom: 18px; letter-spacing: 0.3px; }
+  .question-text .highlight { background: #ffebee; color: #d32f2f; font-weight: 700; padding: 0 4px; border-radius: 4px; border-bottom: 2px solid #d32f2f; }
+  .question-text .source-line { display: block; margin-top: 12px; font-size: 0.85rem; color: var(--text-light); text-align: right; font-weight: 400; letter-spacing: 0; }
   .question-hint { font-size: 0.9rem; color: var(--text-light); margin-bottom: 14px; }
   .fill-input-group { display: flex; gap: 12px; flex-wrap: wrap; margin: 6px 0 10px; }
   .fill-input-group input { flex: 1; min-width: 200px; padding: 12px 18px; border: 2px solid #e0dbd2; border-radius: var(--radius-sm); font-size: 1rem; outline: none; transition: all var(--transition); background: #fff; }
@@ -467,6 +469,7 @@
      <span id="polySelectedCount">已选 0 个</span>
      <button class="btn" style="padding:4px 16px;font-size:0.8rem;margin-left:12px;background:transparent;color:var(--text-light);border:1px solid #ddd;" id="polySelectAll">全选</button>
      <button class="btn" style="padding:4px 16px;font-size:0.8rem;margin-left:6px;background:transparent;color:var(--text-light);border:1px solid #ddd;" id="polyDeselectAll">取消</button>
+     <button class="btn" style="padding:4px 16px;font-size:0.8rem;margin-left:6px;background:transparent;color:var(--accent);border:1px dashed var(--accent);" id="polyAutoExtract">📥 从课文自动提取</button>
     </p>
     <div class="check-list" id="polyCheckList"></div>
     <div class="mode-select" id="polyModeSelect">
@@ -690,18 +693,61 @@
       return merged;
   }
   function getMergedPolyData() {
-      const custom = loadCustom();
-      const merged = { ...DEFAULT_POLY_DATA };
-      for (const char in custom.polys) {
-          if (!merged[char]) merged[char] = { meanings: [] };
-          const existing = merged[char].meanings;
-          const newMeanings = custom.polys[char].meanings || [];
-          newMeanings.forEach(m => {
-              const dup = existing.some(e => e.meaning === m.meaning && e.example === m.example);
-              if (!dup) existing.push(m);
-          });
-      }
-      return merged;
+    const custom = loadCustom();
+    const customPolys = (custom && custom.polys) || {};
+    const allChars = new Set(Object.keys(DEFAULT_POLY_DATA || {}).concat(Object.keys(customPolys)));
+    const merged = {};
+    allChars.forEach(function(char) {
+        const dft = (DEFAULT_POLY_DATA[char] && DEFAULT_POLY_DATA[char].meanings) || [];
+        const cst = (customPolys[char] && customPolys[char].meanings) || [];
+        const all = dft.concat(cst);
+  
+        // 按释义字符串分组，收集所有例句
+        const groups = {};
+        const order = [];
+        all.forEach(function(m) {
+            const key = String(m.meaning || '').trim();
+            if (!key) return;
+            if (!groups[key]) {
+                groups[key] = { meaning: key, examples: [] };
+                order.push(key);
+            }
+            if (m.example && !groups[key].examples.some(function(e) { return e.example === m.example; })) {
+                groups[key].examples.push({
+                    example: m.example,
+                    book: m.book || '',
+                    title: m.title || '',
+                    author: m.author || ''
+                });
+            }
+            (m.extraExamples || []).forEach(function(e) {
+                if (e.example && !groups[key].examples.some(function(x) { return x.example === e.example; })) {
+                    groups[key].examples.push({
+                        example: e.example,
+                        book: e.book || '',
+                        title: e.title || '',
+                        author: e.author || ''
+                    });
+                }
+            });
+        });
+  
+        const meanings = order.map(function(key) {
+            const g = groups[key];
+            const first = g.examples[0] || {};
+            return {
+                meaning: g.meaning,
+                example: first.example || '',
+                book: first.book || '',
+                title: first.title || '',
+                author: first.author || '',
+                extraExamples: g.examples.slice(1)
+            };
+        });
+  
+        merged[char] = { meanings: meanings };
+    });
+    return merged;
   }
   
   // ================================================================
@@ -1334,7 +1380,46 @@
       const container = document.getElementById('polyCheckList');
       container.innerHTML = '';
       const data = getPolyData();
-      for (const char in data) {
+  
+  // ===== 渲染层强制去重（兜底）=====
+  for (const c in data) {
+  const map = new Map();
+  (data[c].meanings || []).forEach(m => {
+    const k = String(m.meaning || '').trim();
+    if (!k) return;
+    if (!map.has(k)) {
+      map.set(k, {
+        meaning: k,
+        example: m.example || '',
+        book: m.book || '',
+        title: m.title || '',
+        author: m.author || '',
+        extraExamples: (m.extraExamples || []).slice()
+      });
+    } else {
+      const cur = map.get(k);
+      const exs = cur.extraExamples;
+      if (m.example && m.example !== cur.example && !exs.some(e => e.example === m.example)) {
+        exs.push({
+          example: m.example,
+          book: m.book || '',
+          title: m.title || '',
+          author: m.author || ''
+        });
+      }
+      (m.extraExamples || []).forEach(e => {
+        if (e.example && e.example !== cur.example && !exs.some(x => x.example === e.example)) {
+          exs.push(e);
+        }
+      });
+    }
+  });
+  data[c].meanings = Array.from(map.values());
+  }
+  // ===== 去重结束 =====
+      
+      const sortedChars = Object.keys(data).sort((a, b) => a.localeCompare(b, 'zh-CN'));
+      for (const char of sortedChars) {
           const div = document.createElement('div');
           div.className = 'check-item';
           if (state.poly.selectedChars.includes(char)) div.classList.add('checked');
@@ -1384,10 +1469,178 @@
           state.poly.selectedChars = Object.keys(data);
           renderPolyList();
       };
-      document.getElementById('polyDeselectAll').onclick = function() {
-          state.poly.selectedChars = [];
-          renderPolyList();
-      };
+      document.getElementById('polyAutoExtract').onclick = function() {
+    const textData = getMergedTextData();
+    const allTextNames = Object.keys(textData);
+    if (allTextNames.length === 0) {
+        alert('还没有任何课文。');
+        return;
+    }
+  
+    // ========== 弹窗：选课文 + 排除字 ==========
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  
+    const panel = document.createElement('div');
+    panel.style.cssText = 'background:#fff;border-radius:16px;padding:20px 22px;max-width:640px;width:100%;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.3);overflow:hidden;';
+  
+    panel.innerHTML = `
+        <h3 style="margin:0 0 12px;font-size:1.1rem;color:#1a3c4a;">📥 从课文自动提取</h3>
+        <p style="margin:0 0 10px;font-size:0.85rem;color:#5a6a7a;line-height:1.5;">
+            勾选要扫描的课文；只出现在 1 篇课文里的字词会被自动排除。
+        </p>
+        <div style="margin-bottom:12px;">
+            <div style="font-weight:600;font-size:0.85rem;color:#1a3c4a;margin-bottom:6px;">选择课文：</div>
+            <div id="extractTextList" style="max-height:180px;overflow-y:auto;border:1px solid #e0dbd2;border-radius:10px;padding:8px 12px;"></div>
+            <div style="margin-top:6px;font-size:0.8rem;">
+                <button id="extractSelectAll" style="background:none;border:none;color:#2a5a6e;cursor:pointer;padding:2px 6px;">全选</button>
+                <button id="extractSelectNone" style="background:none;border:none;color:#2a5a6e;cursor:pointer;padding:2px 6px;">全不选</button>
+            </div>
+        </div>
+        <div style="margin-bottom:12px;">
+            <div style="font-weight:600;font-size:0.85rem;color:#1a3c4a;margin-bottom:6px;">排除字（不会自动加入，用逗号分隔）：</div>
+            <input type="text" id="extractExcludeInput" value="之,其" style="width:100%;padding:8px 12px;border:2px solid #e0dbd2;border-radius:10px;font-size:0.9rem;box-sizing:border-box;" />
+            <div style="font-size:0.75rem;color:#5a6a7a;margin-top:4px;line-height:1.4;">
+                默认排除「之、其」等代词——它们在每篇课文中代指不同，不宜合并。
+            </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:auto;">
+            <button id="extractCancelBtn" style="flex:1;padding:10px 16px;border:2px solid #ccc;border-radius:10px;background:transparent;color:#5a6a7a;font-weight:600;cursor:pointer;">取消</button>
+            <button id="extractConfirmBtn" style="flex:2;padding:10px 16px;border:none;border-radius:10px;background:#c9a86c;color:#fff;font-weight:600;cursor:pointer;">开始提取</button>
+        </div>
+    `;
+  
+    overlay.appendChild(panel);
+    document.body.appendChild(overlay);
+  
+    // 填充课文列表
+    const listEl = panel.querySelector('#extractTextList');
+    allTextNames.forEach(name => {
+        const label = document.createElement('label');
+        label.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer;font-size:0.9rem;';
+        label.innerHTML = '<input type="checkbox" value="' + name + '" checked /> <span>' + name + '</span>';
+        listEl.appendChild(label);
+    });
+  
+    panel.querySelector('#extractSelectAll').onclick = () => {
+        listEl.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = true);
+    };
+    panel.querySelector('#extractSelectNone').onclick = () => {
+        listEl.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    };
+  
+    const closeDialog = () => document.body.removeChild(overlay);
+    panel.querySelector('#extractCancelBtn').onclick = closeDialog;
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeDialog(); });
+  
+    panel.querySelector('#extractConfirmBtn').onclick = () => {
+        const selectedTexts = Array.from(listEl.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+        if (selectedTexts.length === 0) {
+            alert('请至少勾选一篇课文。');
+            return;
+        }
+        const excludeRaw = panel.querySelector('#extractExcludeInput').value || '';
+        const excludeSet = new Set(excludeRaw.split(/[,，、\s]+/).map(s => s.trim()).filter(Boolean));
+  
+        closeDialog();
+        doPolyAutoExtract(selectedTexts, excludeSet, textData);
+    };
+  };
+  
+  // 从指定课文提取高频字词到一词多义
+  function doPolyAutoExtract(selectedTexts, excludeSet, textData) {
+    const wordInfo = {}; // word -> { textName: [{ text, answer }] }
+  
+    selectedTexts.forEach(textName => {
+        const sentences = textData[textName]?.sentences || [];
+        sentences.forEach(s => {
+            (s.targets || []).forEach(t => {
+                const w = (t.word || '').trim();
+                if (!w) return;
+                if (excludeSet.has(w)) return;
+                if (!wordInfo[w]) wordInfo[w] = {};
+                if (!wordInfo[w][textName]) wordInfo[w][textName] = [];
+                wordInfo[w][textName].push({ text: s.text, answer: t.answer });
+            });
+        });
+    });
+  
+    // 只保留出现在 >= 2 篇不同课文里的词
+    const preview = {};
+    for (const w in wordInfo) {
+        const textNames = Object.keys(wordInfo[w]);
+        if (textNames.length < 2) continue;
+  
+        const meaningMap = {};
+        textNames.forEach(tn => {
+            wordInfo[w][tn].forEach(it => {
+                if (!meaningMap[it.answer]) meaningMap[it.answer] = [];
+                meaningMap[it.answer].push({ text: it.text, textName: tn });
+            });
+        });
+  
+        const meanings = [];
+  for (const meaning in meaningMap) {
+    const examples = meaningMap[meaning];
+    const first = examples[0];
+    const extraExamples = examples.slice(1).map(ex => ({
+        example: ex.text,
+        book: ex.textName,
+        title: '',
+        author: ''
+    }));
+    meanings.push({
+        meaning: meaning,
+        example: first.text,
+        book: first.textName,
+        title: '',
+        author: '',
+        extraExamples: extraExamples
+    });
+  }
+  preview[w] = { meanings };
+    }
+  
+    const charCount = Object.keys(preview).length;
+    if (charCount === 0) {
+        alert('所选课文中没有符合条件（出现在 ≥2 篇课文里）的字词。');
+        return;
+    }
+  
+    let totalMeanings = 0;
+    let previewText = '';
+    Object.keys(preview).sort().forEach(w => {
+        totalMeanings += preview[w].meanings.length;
+        previewText += '「' + w + '」 — ' + preview[w].meanings.length + ' 个义项\n';
+    });
+  
+    const ok = confirm(
+        '将从 ' + selectedTexts.length + ' 篇课文中提取 ' + charCount + ' 个字词、共 ' + totalMeanings + ' 个义项：\n\n' +
+        previewText +
+        '\n确定要合并到一词多义库吗？'
+    );
+    if (!ok) return;
+  
+    const custom = loadCustom();
+    let added = 0, skipped = 0;
+    for (const w in preview) {
+        if (!custom.polys[w]) custom.polys[w] = { meanings: [] };
+        const existing = custom.polys[w].meanings;
+        preview[w].meanings.forEach(m => {
+            const dup = existing.some(e => e.meaning === m.meaning && e.example === m.example);
+            if (dup) skipped++;
+            else {
+                existing.push(m);
+                added++;
+            }
+        });
+    }
+    saveCustom(custom);
+  
+    alert('✅ 提取完成\n新增：' + added + ' 个义项\n跳过（已存在）：' + skipped + ' 个');
+    renderPolyList();
+  }
+  
       updatePolySelectCount();
       document.querySelectorAll('#polyModeSelect .mode-btn').forEach(btn => {
           btn.classList.remove('active');
@@ -1416,76 +1669,116 @@
       if (!mode) return;
       const data = getPolyData();
       let questions = [];
-      chars.forEach(char => {
-          const meanings = data[char]?.meanings || [];
-          meanings.forEach(m => {
-              questions.push({ char, example: m.example, meaning: m.meaning, allMeanings: meanings.map(mm => mm
-                      .meaning), module: 'poly', book: m.book || '', title: m.title || '', author: m
-                  .author || '' });
-          });
-      });
+  chars.forEach(char => {
+    const meanings = data[char]?.meanings || [];
+    meanings.forEach(m => {
+        if (mode === 'note') {
+            // 笔记模式：把所有例句都放进去
+            if (m.example) {
+                questions.push({
+                    char: char,
+                    example: m.example,
+                    meaning: m.meaning,
+                    book: m.book || '',
+                    title: m.title || '',
+                    author: m.author || '',
+                    module: 'poly'
+                });
+            }
+            (m.extraExamples || []).forEach(ex => {
+                questions.push({
+                    char: char,
+                    example: ex.example,
+                    meaning: m.meaning,
+                    book: ex.book || '',
+                    title: ex.title || '',
+                    author: ex.author || '',
+                    module: 'poly'
+                });
+            });
+        } else {
+            // 答题模式：一个释义只出一条题
+            questions.push({
+                char: char,
+                example: m.example,
+                meaning: m.meaning,
+                allMeanings: meanings.map(mm => mm.meaning),
+                module: 'poly',
+                book: m.book || '',
+                title: m.title || '',
+                author: m.author || ''
+            });
+        }
+    });
+  });
       if (questions.length === 0) return;
   
-      if (mode === 'note') {
-          document.getElementById('poly-list').style.display = 'none';
-          document.getElementById('poly-quiz').style.display = 'block';
-          document.getElementById('polyQuizTitle').textContent = '📝 笔记 · 一词多义';
-          document.getElementById('polyProgress').textContent = '分组浏览';
-          document.getElementById('polyProgressFill').style.width = '100%';
-          document.getElementById('polyFillArea').style.display = 'none';
-          document.getElementById('polyChoiceArea').style.display = 'none';
-          document.getElementById('polyNextGroup').style.display = 'none';
-          document.getElementById('polyFeedback').classList.remove('show');
-          document.getElementById('polyStarToggle').parentElement.style.display = 'none';
-          const noteArea = document.getElementById('polyNoteArea');
-          noteArea.style.display = 'block';
-          const container = document.getElementById('polyNoteContainer');
-          container.innerHTML = '';
-          const groupedByChar = {};
-          questions.forEach(q => {
-              if (!groupedByChar[q.char]) groupedByChar[q.char] = [];
-              groupedByChar[q.char].push(q);
-          });
-          for (const char in groupedByChar) {
-              const items = groupedByChar[char];
-              const meaningMap = {};
-              items.forEach(q => {
-                  const key = q.meaning;
-                  if (!meaningMap[key]) meaningMap[key] = [];
-                  meaningMap[key].push(q);
-              });
-              const card = document.createElement('div');
-              card.className = 'note-card';
-              card.style.borderLeftColor = '#2a5a6e';
-              let bodyHtml = `<div class="note-title">🔤 ${char}</div>`;
-              for (const meaning in meaningMap) {
-                  const examples = meaningMap[meaning];
-                  bodyHtml += `<div class="meaning-group">`;
-                  bodyHtml += `<div class="meaning-head"><span class="arrow">▶</span> ${meaning}</div>`;
-                  bodyHtml += `<ul class="example-list">`;
-                  examples.forEach((q, idx) => {
-                      const highlighted = q.example.replace(new RegExp(q.char, 'g'),
-                          `<span class="highlight">${q.char}</span>`);
-                      const source = formatSource(q.book, q.title, q.author);
-                      bodyHtml += `<li>${highlighted} <span class="source"><span class="book">${source}</span></span></li>`;
-                  });
-                  bodyHtml += `</ul></div>`;
-              }
-              card.innerHTML = bodyHtml;
-              container.appendChild(card);
-              const uniqueMeanings = Object.keys(meaningMap);
-              uniqueMeanings.forEach(m => {
-                  const q = items.find(it => it.meaning === m);
-                  if (q) updateLearning('poly', { char, meaning: m }, true);
-              });
-          }
-          document.getElementById('polyNoteBackBtn').onclick = function() {
-              document.getElementById('poly-quiz').style.display = 'none';
-              document.getElementById('poly-list').style.display = 'block';
-              renderPolyList();
-          };
-          return;
-      }
+  if (mode === 'note') {
+    document.getElementById('poly-list').style.display = 'none';
+    document.getElementById('poly-quiz').style.display = 'block';
+    document.getElementById('polyQuizTitle').textContent = '📝 笔记 · 一词多义';
+    document.getElementById('polyProgress').textContent = '分组浏览';
+    document.getElementById('polyProgressFill').style.width = '100%';
+    document.getElementById('polyFillArea').style.display = 'none';
+    document.getElementById('polyChoiceArea').style.display = 'none';
+    document.getElementById('polyNextGroup').style.display = 'none';
+    document.getElementById('polyFeedback').classList.remove('show');
+    document.getElementById('polyStarToggle').parentElement.style.display = 'none';
+    const noteArea = document.getElementById('polyNoteArea');
+    noteArea.style.display = 'block';
+    const container = document.getElementById('polyNoteContainer');
+    container.innerHTML = '';
+  
+    const sortedChars = chars.slice().sort(function(a, b) { return a.localeCompare(b, 'zh-CN'); });
+    sortedChars.forEach(function(char) {
+        const meanings = data[char] && data[char].meanings ? data[char].meanings : [];
+        if (meanings.length === 0) return;
+        const card = document.createElement('div');
+        card.className = 'note-card';
+        card.style.borderLeftColor = '#2a5a6e';
+        let bodyHtml = '<div class="note-title">🔤 ' + char + '</div>';
+  
+        meanings.forEach(function(m) {
+            bodyHtml += '<div class="meaning-group">';
+            bodyHtml += '<div class="meaning-head"><span class="arrow">▶</span> ' + m.meaning + '</div>';
+            bodyHtml += '<ul class="example-list">';
+  
+            // 收集：主例句 + 所有额外例句
+            const allExs = [];
+            const seen = {};
+            if (m.example && !seen[m.example]) {
+                seen[m.example] = true;
+                allExs.push({ example: m.example, book: m.book, title: m.title, author: m.author });
+            }
+            (m.extraExamples || []).forEach(function(ex) {
+                if (ex.example && !seen[ex.example]) {
+                    seen[ex.example] = true;
+                    allExs.push({ example: ex.example, book: ex.book, title: ex.title, author: ex.author });
+                }
+            });
+  
+            // 渲染每条例句
+            allExs.forEach(function(s) {
+                const highlighted = s.example.replace(new RegExp(char, 'g'), '<span class="highlight">' + char + '</span>');
+                const source = formatSource(s.book, s.title, s.author);
+                bodyHtml += '<li>' + highlighted + ' <span class="source"><span class="book">' + source + '</span></span></li>';
+            });
+  
+            bodyHtml += '</ul></div>';
+            updateLearning('poly', { char: char, meaning: m.meaning }, true);
+        });
+  
+        card.innerHTML = bodyHtml;
+        container.appendChild(card);
+    });
+  
+    document.getElementById('polyNoteBackBtn').onclick = function() {
+        document.getElementById('poly-quiz').style.display = 'none';
+        document.getElementById('poly-list').style.display = 'block';
+        renderPolyList();
+    };
+    return;
+  }
       
       document.getElementById('polyStarToggle').parentElement.style.display = '';
       state.poly.questions = shuffle(questions);
@@ -1521,7 +1814,11 @@
       document.getElementById('polyProgressFill').style.width = ((idx) / qs.length * 100) + '%';
       let html = q.example;
       if (q.char) html = html.replace(new RegExp(q.char, 'g'), `<span class="highlight">${q.char}</span>`);
-      document.getElementById('polyQuestionText').innerHTML = html;
+      const srcParts = [];
+  if (q.book) srcParts.push(q.book);
+  if (q.author) srcParts.push(q.author);
+  if (srcParts.length) html += `<span class="source-line">—— ${srcParts.join(' · ')}</span>`;
+  document.getElementById('polyQuestionText').innerHTML = html;
       document.getElementById('polyQuestionHint').textContent = '解释「' + q.char + '」在句中的含义';
       document.getElementById('polyFillInput').value = '';
       document.getElementById('polyFillInput').disabled = false;
@@ -1900,7 +2197,11 @@
         const regex = new RegExp(highlightWord, 'g');
         displayText = displayText.replace(regex, `<span class="highlight">${highlightWord}</span>`);
     }
-    document.getElementById('reviewFavQuestionText').innerHTML = displayText;
+    let src = '';
+  if (q.module === 'text' && q.extra && q.extra.textName) src = '《' + q.extra.textName + '》';
+  else if (q.module === 'poly' && q.extra && q.extra.char) src = '一词多义 · ' + q.extra.char;
+  if (src) displayText += `<span class="source-line">—— ${src}</span>`;
+  document.getElementById('reviewFavQuestionText').innerHTML = displayText;
   
     let wordToExplain = q.extra?.word || q.extra?.char;
     if (!wordToExplain && q.questionId) {
@@ -2476,4 +2777,4 @@
  </script>
 </body>
 
-     </html>
+   </html>
