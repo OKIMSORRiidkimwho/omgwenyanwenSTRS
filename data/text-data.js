@@ -198,4 +198,29 @@
                   { word: '乃', answer: '竟，竟然' },
                   { word: '其', answer: '表反问，难道' }
               ] },
-              { id: 'ss23', text: '圣人无常师。', targets: [{ word: '常', answer
+              { id: 'ss23', text: '圣人无常师。', targets: [{ word: '常', answer: '固定的' }] },
+              { id: 'ss24', text: '孔子师郯子、苌弘、师襄、老聃。', targets: [{ word: '师', answer: '意动用法，以……为师' }] },
+              { id: 'ss25', text: '郯子之徒，其贤不及孔子。', targets: [
+                  { word: '徒', answer: '同类的人' },
+                  { word: '贤', answer: '形容词作名词，才能，品德' }
+              ] },
+              { id: 'ss27', text: '是故弟子不必不如师，师不必贤于弟子。', targets: [
+                  { word: '不必', answer: '古今异义：不一定（今义：没有必要）' },
+                  { word: '贤', answer: '胜过，超过' },
+                  { word: '于', answer: '介词，比' }
+              ] },
+              { id: 'ss28', text: '闻道有先后，术业有专攻，如是而已。', targets: [{ word: '攻', answer: '学习，研究' }] },
+              { id: 'ss29', text: '李氏子蟠，年十七，好古文，六艺经传皆通习之。', targets: [
+                  { word: '好', answer: '喜欢' },
+                  { word: '通', answer: '普遍' }
+              ] },
+              { id: 'ss30', text: '不拘于时，学于余。', targets: [
+                  { word: '于', answer: '第一个“于”表被动，被；第二个“于”表介词，向' }
+              ] },
+              { id: 'ss31', text: '余嘉其能行古道，作《师说》以贻之。', targets: [
+                  { word: '嘉', answer: '赞许' },
+                  { word: '贻', answer: '赠送' }
+              ] }
+          ]
+      }
+  };
