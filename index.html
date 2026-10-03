@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 
 <head>
- <meta charset="UTF-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <title>不背文言 · 完整版（含收藏与刷题）</title>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>不背文言 · STRS出品</title>
  <style>
   /* ===== 样式（完整保留） ===== */
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -20,17 +20,21 @@
       --font-size-base: 16px;
       --highlight-bg: #fdebd0; --highlight-border: #d48c6b;
   }
+  html {
+    font-size: var(--font-size-base, 16px);
+    transition: font-size 0.2s;
+  }
   body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      font-size: var(--font-size-base);
-      transition: background 0.3s, color 0.3s, font-size 0.2s;
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-size: 1rem;
+    transition: background 0.3s, color 0.3s;
   }
   #app {
       width: 100%;
@@ -297,62 +301,167 @@
   .note-container::-webkit-scrollbar, .custom-list::-webkit-scrollbar { width: 4px; }
   .note-container::-webkit-scrollbar-track, .custom-list::-webkit-scrollbar-track { background: #eee9e2; border-radius: 10px; }
   .note-container::-webkit-scrollbar-thumb, .custom-list::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+  
+  
+  /* ===== 暗色模式修复：选中/激活/hover 状态 ===== */
+  [data-theme="dark"] .list-item.selected,
+  [data-theme="dark"] .mode-btn.active,
+  [data-theme="dark"] .check-item.checked {
+  background: #4a4a4a;
+  color: #f0e8d8;
+  }
+  [data-theme="dark"] .list-item.selected { border-color: var(--accent); }
+  [data-theme="dark"] .mode-btn.active { border-color: var(--accent); }
+  [data-theme="dark"] .check-item.checked { border-color: var(--accent); }
+  
+  [data-theme="dark"] .mode-btn,
+  [data-theme="dark"] .option-btn,
+  [data-theme="dark"] .fill-input-group input,
+  [data-theme="dark"] .settings-panel .font-options .font-btn,
+  [data-theme="dark"] .custom-form .form-row input,
+  [data-theme="dark"] .custom-form .form-row textarea {
+  background: #3a3a3a;
+  color: #e8e0d6;
+  border-color: #555;
+  }
+  
+  [data-theme="dark"] .favorite-item.graduated {
+  background: #3a3a3a;
+  border-left-color: #666;
+  color: #888;
+  opacity: 0.55;
+}
+[data-theme="dark"] .favorite-item.graduated .fi-question,
+[data-theme="dark"] .favorite-item.graduated .fi-meta,
+[data-theme="dark"] .favorite-item.graduated .fi-actions {
+  color: #888;
+}
+  
+  [data-theme="dark"] .fill-input-group input:disabled {
+  background: #2a2a2a;
+  color: #888;
+  }
+  
+  [data-theme="dark"] .option-btn:hover:not(.disabled) {
+  background: #4a4a4a;
+  }
+  
+  [data-theme="dark"] .note-sentence:hover,
+  [data-theme="dark"] .add-target-btn:hover,
+  [data-theme="dark"] .favorite-group-header:hover,
+  [data-theme="dark"] .favorite-item .fi-actions .btn-sm:hover {
+  background: #4a4a4a;
+  }
+  
+  [data-theme="dark"] .btn-outline:hover {
+  background: #d4c9b0;
+  color: #2a2a2a;
+  }
+  
+  [data-theme="dark"] .feedback.info {
+  background: #3a3a3a;
+  }
+  
+  [data-theme="dark"] .option-btn.correct {
+  background: #1a4a2a;
+  color: #a8e8b8;
+  border-color: #3a8a5a;
+  }
+  [data-theme="dark"] .option-btn.wrong {
+  background: #4a1a1a;
+  color: #f5a8a0;
+  border-color: #c04030;
+  }
+  [data-theme="dark"] .feedback.success {
+  background: #1a3a2a;
+  border-left-color: #3a8a5a;
+  color: #c8e8d0;
+  }
+  [data-theme="dark"] .feedback.error {
+  background: #3a1a1a;
+  border-left-color: #c04030;
+  color: #f0c0b8;
+  }
+  
+  [data-theme="dark"] .list-item .status-tag.new {
+  background: #4a4a4a;
+  color: #b0b0b0;
+  }
+  [data-theme="dark"] .list-item .status-tag.learning {
+  background: #5a3a1a;
+  color: #f5c896;
+  }
+  [data-theme="dark"] .list-item .status-tag.mastered {
+  background: #1a4a2a;
+  color: #a8e8b8;
+  }
+  
+  [data-theme="dark"] .question-text .highlight {
+  background: #4a2020;
+  color: #ff8a80;
+  border-bottom-color: #ff8a80;
+  }
+  
+  
+  /* ===== 圆角胶囊开关 ===== */
+  .chip-toggle {
+    padding: 10px 22px;
+    border-radius: 30px;
+    border: 2px solid #d0c8b8;
+    background: transparent;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: inherit;
+    letter-spacing: 0.5px;
+  }
+  .chip-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .chip-toggle.on {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(201,168,108,0.3);
+  }
+  [data-theme="dark"] .chip-toggle {
+    border-color: #555;
+    color: #b0a8a0;
+  }
+  [data-theme="dark"] .chip-toggle.on {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #2a2a2a;
+  }
+  
  </style>
 </head>
 
 <body>
-
- <div id="app">
-  <!-- ===== 顶部 ===== -->
+ <div id="app"><!-- ===== 顶部 ===== -->
   <div class="app-header">
    <h1>📖 不背<span>文言</span></h1>
-   <div class="header-actions">
-    <button class="settings-btn" id="settingsToggle" title="设置">⚙️</button>
-    <button class="back-btn" id="globalBack" style="display:none;">← 返回</button>
-   </div>
-  </div>
-
-  <!-- ===== 设置面板 ===== -->
+   <div class="header-actions"><button class="settings-btn" id="settingsToggle" title="设置">⚙️</button><button class="back-btn" id="globalBack" style="display:none;">← 返回</button></div>
+  </div><!-- ===== 设置面板 ===== -->
   <div class="settings-overlay" id="settingsOverlay">
    <div class="settings-panel">
-    <h2>⚙️ 设置 <button class="close-btn" id="settingsClose">✕</button></h2>
-    <div class="setting-group">
-     <label>主题色</label>
-     <div class="color-options" id="colorOptions">
-      <button class="color-btn" data-theme="default" style="background:#1a3c4a;" title="典雅绿"><span class="check">✓</span></button>
-      <button class="color-btn" data-theme="warm" style="background:#6b4f3c;" title="暖阳橙"><span class="check">✓</span></button>
-      <button class="color-btn" data-theme="cool" style="background:#2c3e50;" title="静谧蓝"><span class="check">✓</span></button>
-      <button class="color-btn" data-theme="dark" style="background:#222;" title="暗夜黑"><span class="check">✓</span></button>
-     </div>
+    <h2>⚙️ 设置<button class="close-btn" id="settingsClose">✕</button></h2>
+    <div class="setting-group"><label>主题色</label>
+     <div class="color-options" id="colorOptions"><button class="color-btn" data-theme="default" style="background:#1a3c4a;" title="典雅绿"><span class="check">✓</span></button><button class="color-btn" data-theme="warm" style="background:#6b4f3c;" title="暖阳橙"><span class="check">✓</span></button><button class="color-btn" data-theme="cool" style="background:#2c3e50;" title="静谧蓝"><span class="check">✓</span></button><button class="color-btn" data-theme="dark" style="background:#222;" title="暗夜黑"><span class="check">✓</span></button></div>
     </div>
-    <div class="setting-group">
-     <label>字体大小</label>
-     <div class="font-options" id="fontOptions">
-      <button class="font-btn" data-size="small">小</button>
-      <button class="font-btn" data-size="medium">中</button>
-      <button class="font-btn" data-size="large">大</button>
-     </div>
+    <div class="setting-group"><label>字体大小</label>
+     <div class="font-options" id="fontOptions"><button class="font-btn" data-size="small">小</button><button class="font-btn" data-size="medium">中</button><button class="font-btn" data-size="large">大</button></div>
     </div>
-    <div class="setting-group">
-     <label>数据管理</label>
-     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="btn btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem;" id="exportDataBtn">📤 导出备份</button>
-      <button class="btn btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem;" id="importDataBtn">📥 导入备份</button>
-     </div>
-     <p style="font-size:0.75rem;color:var(--text-light);margin-top:8px;line-height:1.5;">
-      备份包含：学习记录、收藏与学分、自定义内容、主题设置
-     </p>
-    </div>
-
-    <input type="file" id="importFileInput" accept=".json,application/json" style="display:none;" />
-
-    <button class="btn btn-accent w-full" id="settingsApply">应用并关闭</button>
+    <div class="setting-group"><label>音效</label><button class="chip-toggle" id="soundToggle" type="button">🔇 关闭</button></div>
+    <div class="setting-group"><label>数据管理</label>
+     <div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="btn btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem;" id="exportDataBtn">📤 导出备份</button><button class="btn btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem;" id="importDataBtn">📥 导入备份</button></div>
+     <p style="font-size:0.75rem;color:var(--text-light);margin-top:8px;line-height:1.5;">备份包含：学习记录、收藏与学分、自定义内容、主题设置</p>
+    </div><input type="file" id="importFileInput" accept=".json,application/json" style="display:none;"><button class="btn btn-accent w-full" id="settingsApply">应用并关闭</button>
    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- 首页 -->
-  <!-- ============================================================ -->
+  </div><!-- ============================================================ --><!-- 首页 --><!-- ============================================================ -->
   <div id="page-home" class="page active">
    <div class="home-grid">
     <div class="home-card" data-module="text">
@@ -360,67 +469,48 @@
      <div class="info">
       <h3>课文解释</h3>
       <p>打乱句子 · 多重点词 · 填空/选择/笔记</p>
-     </div>
-     <span class="badge">开始</span>
+     </div><span class="badge">开始</span>
     </div>
     <div class="home-card" data-module="poly">
      <div class="icon">🔤</div>
      <div class="info">
       <h3>一词多义</h3>
       <p>勾选字词 · 例句考察 · 填空/选择/笔记</p>
-     </div>
-     <span class="badge">开始</span>
+     </div><span class="badge">开始</span>
     </div>
     <div class="home-card" data-module="favorites">
      <div class="icon">⭐</div>
      <div class="info">
       <h3>我的收藏</h3>
       <p>按日期分组 · 学分系统 · 毕业机制</p>
-     </div>
-     <span class="badge" id="favBadge">0</span>
+     </div><span class="badge" id="favBadge">0</span>
     </div>
     <div class="home-card" data-module="reviewfavorites">
      <div class="icon">🔄</div>
      <div class="info">
       <h3>刷收藏题</h3>
       <p>勾选日期 · 刷题赚学分 · 毕业即止</p>
-     </div>
-     <span class="badge" id="reviewFavBadge">0</span>
+     </div><span class="badge" id="reviewFavBadge">0</span>
     </div>
     <div class="home-card" data-module="custom">
      <div class="icon">✏️</div>
      <div class="info">
       <h3>自定义笔记</h3>
       <p>添加课文 / 一词多义，扩充知识库</p>
-     </div>
-     <span class="badge">编辑</span>
+     </div><span class="badge">编辑</span>
     </div>
    </div>
-   <div style="margin-top:22px;font-size:0.8rem;color:var(--text-light);text-align:center;border-top:1px solid #f0ede8;padding-top:16px;">
-    数据自动保存本地 · 支持导出 JSON 备份
-   </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- 课文解释 -->
-  <!-- ============================================================ -->
+<div id="homeQuote" style="margin-top:22px;font-size:0.9rem;color:var(--text-light);text-align:center;border-top:1px solid #f0ede8;padding-top:16px;line-height:1.7;font-style:italic;"></div>
+  </div><!-- ============================================================ --><!-- 课文解释 --><!-- ============================================================ -->
   <div id="page-text" class="page">
    <div id="text-list">
     <h2 style="font-size:1.2rem;font-weight:600;margin-bottom:6px;">📜 选择课文</h2>
     <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:14px;">点击选中，然后选择模式开始</p>
     <div class="list-grid" id="textListGrid"></div>
-    <div class="mode-select" id="textModeSelect">
-     <button class="mode-btn" data-mode="fill">✍️ 填空 <span class="sub">输入自行批改</span></button>
-     <button class="mode-btn" data-mode="choice">🎯 选择 <span class="sub">四选一自动判</span></button>
-     <button class="mode-btn" data-mode="note">📝 笔记 <span class="sub">全文折叠 · 多词展开</span></button>
-    </div>
-    <button class="btn w-full" id="textStartBtn" disabled>开始</button>
+    <div class="mode-select" id="textModeSelect"><button class="mode-btn" data-mode="fill">✍️ 填空<span class="sub">输入自行批改</span></button><button class="mode-btn" data-mode="choice">🎯 选择<span class="sub">四选一自动判</span></button><button class="mode-btn" data-mode="note">📝 笔记<span class="sub">全文折叠 · 多词展开</span></button></div><button class="btn w-full" id="textStartBtn" disabled>开始</button>
    </div>
    <div id="text-quiz" style="display:none;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-     <span style="font-size:0.9rem;color:var(--text-light);" id="textQuizTitle">《劝学》</span>
-     <span style="font-size:0.9rem;font-weight:500;" id="textProgress">1 / 6</span>
-    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:0.9rem;color:var(--text-light);" id="textQuizTitle">《劝学》</span><span style="font-size:0.9rem;font-weight:500;" id="textProgress">1 / 6</span></div>
     <div class="progress">
      <div class="progress-bar">
       <div class="fill" id="textProgressFill"></div>
@@ -429,61 +519,33 @@
     <div class="question-area">
      <div class="question-text" id="textQuestionText"></div>
      <div class="question-hint" id="textQuestionHint">请解释标红词语在句中的意思</div>
-     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-      <button class="star-toggle" id="textStarToggle" title="收藏此题目">☆</button>
-      <span style="font-size:0.85rem;color:var(--text-light);">点击星星收藏</span>
-     </div>
+     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><button class="star-toggle" id="textStarToggle" title="收藏此题目">☆</button><span style="font-size:0.85rem;color:var(--text-light);">点击星星收藏</span></div>
      <div id="textFillArea">
-      <div class="fill-input-group">
-       <input type="text" id="textFillInput" placeholder="输入你的解释…" />
-       <button class="btn btn-accent" id="textFillSubmit">确定</button>
-      </div>
+      <div class="fill-input-group"><input type="text" id="textFillInput" placeholder="输入你的解释…"><button class="btn btn-accent" id="textFillSubmit">确定</button></div>
      </div>
      <div id="textChoiceArea" style="display:none;">
       <div class="options-grid" id="textOptionsGrid"></div>
      </div>
      <div id="textNoteArea" style="display:none;">
-      <div class="note-container" id="textNoteContainer"></div>
-      <button class="btn" id="textNoteBackBtn">返回课文列表</button>
+      <div class="note-container" id="textNoteContainer"></div><button class="btn" id="textNoteBackBtn">返回课文列表</button>
      </div>
-     <div class="feedback" id="textFeedback">
-      <span class="fb-icon">✓</span>
-      <div><strong id="textFeedbackTitle">正确！</strong><br /><span id="textFeedbackDetail"></span></div>
+     <div class="feedback" id="textFeedback"><span class="fb-icon">✓</span>
+      <div><strong id="textFeedbackTitle">正确！</strong><br><span id="textFeedbackDetail"></span></div>
      </div>
-     <div class="btn-group" id="textNextGroup" style="display:none;">
-      <button class="btn" id="textNextBtn">下一题 →</button>
-      <button class="btn btn-outline" id="textFinishBtn">完成</button>
-     </div>
+     <div class="btn-group" id="textNextGroup" style="display:none;"><button class="btn" id="textNextBtn">下一题 →</button><button class="btn btn-outline" id="textFinishBtn">完成</button></div>
     </div>
    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- 一词多义 -->
-  <!-- ============================================================ -->
+  </div><!-- ============================================================ --><!-- 一词多义 --><!-- ============================================================ -->
   <div id="page-poly" class="page">
    <div id="poly-list">
     <h2 style="font-size:1.2rem;font-weight:600;margin-bottom:4px;">🔤 一词多义</h2>
     <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:6px;">勾选字词，选择模式开始</p>
-    <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:12px;">
-     <span id="polySelectedCount">已选 0 个</span>
-     <button class="btn" style="padding:4px 16px;font-size:0.8rem;margin-left:12px;background:transparent;color:var(--text-light);border:1px solid #ddd;" id="polySelectAll">全选</button>
-     <button class="btn" style="padding:4px 16px;font-size:0.8rem;margin-left:6px;background:transparent;color:var(--text-light);border:1px solid #ddd;" id="polyDeselectAll">取消</button>
-     <button class="btn" style="padding:4px 16px;font-size:0.8rem;margin-left:6px;background:transparent;color:var(--accent);border:1px dashed var(--accent);" id="polyAutoExtract">📥 从课文自动提取</button>
-    </p>
+    <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:12px;"><span id="polySelectedCount">已选 0 个</span><button class="btn" style="padding:4px 16px;font-size:0.8rem;margin-left:12px;background:transparent;color:var(--text-light);border:1px solid #ddd;" id="polySelectAll">全选</button><button class="btn" style="padding:4px 16px;font-size:0.8rem;margin-left:6px;background:transparent;color:var(--text-light);border:1px solid #ddd;" id="polyDeselectAll">取消</button><button class="btn" style="padding:4px 16px;font-size:0.8rem;margin-left:6px;background:transparent;color:var(--accent);border:1px dashed var(--accent);" id="polyAutoExtract">📥 从课文自动提取</button></p>
     <div class="check-list" id="polyCheckList"></div>
-    <div class="mode-select" id="polyModeSelect">
-     <button class="mode-btn" data-mode="fill">✍️ 填空 <span class="sub">输入自行批改</span></button>
-     <button class="mode-btn" data-mode="choice">🎯 选择 <span class="sub">四选一自动判</span></button>
-     <button class="mode-btn" data-mode="note">📝 笔记 <span class="sub">按释义分组</span></button>
-    </div>
-    <button class="btn w-full" id="polyStartBtn" disabled>开始</button>
+    <div class="mode-select" id="polyModeSelect"><button class="mode-btn" data-mode="fill">✍️ 填空<span class="sub">输入自行批改</span></button><button class="mode-btn" data-mode="choice">🎯 选择<span class="sub">四选一自动判</span></button><button class="mode-btn" data-mode="note">📝 笔记<span class="sub">按释义分组</span></button></div><button class="btn w-full" id="polyStartBtn" disabled>开始</button>
    </div>
    <div id="poly-quiz" style="display:none;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-     <span style="font-size:0.9rem;color:var(--text-light);" id="polyQuizTitle">一词多义</span>
-     <span style="font-size:0.9rem;font-weight:500;" id="polyProgress">1 / 6</span>
-    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:0.9rem;color:var(--text-light);" id="polyQuizTitle">一词多义</span><span style="font-size:0.9rem;font-weight:500;" id="polyProgress">1 / 6</span></div>
     <div class="progress">
      <div class="progress-bar">
       <div class="fill" id="polyProgressFill"></div>
@@ -492,69 +554,39 @@
     <div class="question-area">
      <div class="question-text" id="polyQuestionText"></div>
      <div class="question-hint" id="polyQuestionHint">解释标红字在句中的含义</div>
-     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-      <button class="star-toggle" id="polyStarToggle" title="收藏此题目">☆</button>
-      <span style="font-size:0.85rem;color:var(--text-light);">点击星星收藏</span>
-     </div>
+     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><button class="star-toggle" id="polyStarToggle" title="收藏此题目">☆</button><span style="font-size:0.85rem;color:var(--text-light);">点击星星收藏</span></div>
      <div id="polyFillArea">
-      <div class="fill-input-group">
-       <input type="text" id="polyFillInput" placeholder="输入你的解释…" />
-       <button class="btn btn-accent" id="polyFillSubmit">确定</button>
-      </div>
+      <div class="fill-input-group"><input type="text" id="polyFillInput" placeholder="输入你的解释…"><button class="btn btn-accent" id="polyFillSubmit">确定</button></div>
      </div>
      <div id="polyChoiceArea" style="display:none;">
       <div class="options-grid" id="polyOptionsGrid"></div>
      </div>
      <div id="polyNoteArea" style="display:none;">
-      <div class="note-container" id="polyNoteContainer"></div>
-      <button class="btn" id="polyNoteBackBtn">返回字词列表</button>
+      <div class="note-container" id="polyNoteContainer"></div><button class="btn" id="polyNoteBackBtn">返回字词列表</button>
      </div>
-     <div class="feedback" id="polyFeedback">
-      <span class="fb-icon">✓</span>
-      <div><strong id="polyFeedbackTitle">正确！</strong><br /><span id="polyFeedbackDetail"></span></div>
+     <div class="feedback" id="polyFeedback"><span class="fb-icon">✓</span>
+      <div><strong id="polyFeedbackTitle">正确！</strong><br><span id="polyFeedbackDetail"></span></div>
      </div>
-     <div class="btn-group" id="polyNextGroup" style="display:none;">
-      <button class="btn" id="polyNextBtn">下一题 →</button>
-      <button class="btn btn-outline" id="polyFinishBtn">完成</button>
-     </div>
+     <div class="btn-group" id="polyNextGroup" style="display:none;"><button class="btn" id="polyNextBtn">下一题 →</button><button class="btn btn-outline" id="polyFinishBtn">完成</button></div>
     </div>
    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- 我的收藏 -->
-  <!-- ============================================================ -->
+  </div><!-- ============================================================ --><!-- 我的收藏 --><!-- ============================================================ -->
   <div id="page-favorites" class="page">
    <h2 style="font-size:1.2rem;font-weight:600;margin-bottom:4px;">⭐ 我的收藏</h2>
    <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:16px;">按日期分组，学分达到3即毕业</p>
    <div id="favoritesContainer"></div>
-   <div class="btn-group" style="margin-top:12px;">
-    <button class="btn btn-outline" id="favBackBtn">返回首页</button>
-   </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- 刷收藏题 -->
-  <!-- ============================================================ -->
+   <div class="btn-group" style="margin-top:12px;"><button class="btn btn-outline" id="favBackBtn">返回首页</button></div>
+  </div><!-- ============================================================ --><!-- 刷收藏题 --><!-- ============================================================ -->
   <div id="page-reviewfavorites" class="page">
    <div id="reviewFavList">
     <h2 style="font-size:1.2rem;font-weight:600;margin-bottom:4px;">🔄 刷收藏题</h2>
     <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:16px;">勾选日期或题目，开始刷题赚学分（答对+1，答错-1）</p>
     <div id="reviewFavSelectArea"></div>
-    <div class="mode-select" id="reviewFavModeSelect">
-     <button class="mode-btn" data-mode="fill">✍️ 填空 <span class="sub">输入自行批改</span></button>
-     <button class="mode-btn active" data-mode="choice">🎯 选择 <span class="sub">四选一自动判</span></button>
-    </div>
-    <div class="btn-group">
-     <button class="btn btn-accent" id="reviewFavStartBtn" disabled>开始刷题</button>
-     <button class="btn btn-outline" id="reviewFavBackBtn">返回首页</button>
-    </div>
+    <div class="mode-select" id="reviewFavModeSelect"><button class="mode-btn" data-mode="fill">✍️ 填空<span class="sub">输入自行批改</span></button><button class="mode-btn active" data-mode="choice">🎯 选择<span class="sub">四选一自动判</span></button></div>
+    <div class="btn-group"><button class="btn btn-accent" id="reviewFavStartBtn" disabled>开始刷题</button><button class="btn btn-outline" id="reviewFavBackBtn">返回首页</button></div>
    </div>
    <div id="reviewFavQuiz" style="display:none;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-     <span style="font-size:0.9rem;color:var(--text-light);" id="reviewFavQuizTitle">刷收藏题</span>
-     <span style="font-size:0.9rem;font-weight:500;" id="reviewFavProgress">1 / 6</span>
-    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:0.9rem;color:var(--text-light);" id="reviewFavQuizTitle">刷收藏题</span><span style="font-size:0.9rem;font-weight:500;" id="reviewFavProgress">1 / 6</span></div>
     <div class="progress">
      <div class="progress-bar">
       <div class="fill" id="reviewFavProgressFill"></div>
@@ -564,95 +596,51 @@
      <div class="question-text" id="reviewFavQuestionText"></div>
      <div class="question-hint" id="reviewFavQuestionHint">请解释标红词语在句中的意思</div>
      <div id="reviewFavFillArea">
-      <div class="fill-input-group">
-       <input type="text" id="reviewFavFillInput" placeholder="输入你的解释…" />
-       <button class="btn btn-accent" id="reviewFavFillSubmit">确定</button>
-      </div>
+      <div class="fill-input-group"><input type="text" id="reviewFavFillInput" placeholder="输入你的解释…"><button class="btn btn-accent" id="reviewFavFillSubmit">确定</button></div>
      </div>
      <div id="reviewFavChoiceArea" style="display:none;">
       <div class="options-grid" id="reviewFavOptionsGrid"></div>
      </div>
-     <div class="feedback" id="reviewFavFeedback">
-      <span class="fb-icon">✓</span>
-      <div><strong id="reviewFavFeedbackTitle">正确！</strong><br /><span id="reviewFavFeedbackDetail"></span></div>
+     <div class="feedback" id="reviewFavFeedback"><span class="fb-icon">✓</span>
+      <div><strong id="reviewFavFeedbackTitle">正确！</strong><br><span id="reviewFavFeedbackDetail"></span></div>
      </div>
-     <div class="btn-group" id="reviewFavNextGroup" style="display:none;">
-      <button class="btn" id="reviewFavNextBtn">下一题 →</button>
-      <button class="btn btn-outline" id="reviewFavFinishBtn">完成</button>
-     </div>
+     <div class="btn-group" id="reviewFavNextGroup" style="display:none;"><button class="btn" id="reviewFavNextBtn">下一题 →</button><button class="btn btn-outline" id="reviewFavFinishBtn">完成</button></div>
     </div>
    </div>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- 自定义笔记 -->
-  <!-- ============================================================ -->
+  </div><!-- ============================================================ --><!-- 自定义笔记 --><!-- ============================================================ -->
   <div id="page-custom" class="page">
    <h2 style="font-size:1.2rem;font-weight:600;margin-bottom:6px;">✏️ 自定义笔记</h2>
    <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:16px;">添加你自己的课文句子或一词多义，扩充知识库</p>
    <div class="custom-form">
     <h3 style="font-size:1.05rem;margin-bottom:12px;">📜 添加课文句子（支持多个重点词）</h3>
-    <div class="form-row">
-     <label>课文名</label>
-     <input type="text" id="customTextName" placeholder="例如：论语" />
-    </div>
-    <div class="form-row">
-     <label>句子</label>
-     <input type="text" id="customTextSentence" placeholder="例如：学而时习之，不亦说乎？" />
-    </div>
+    <div class="form-row"><label>课文名</label><input type="text" id="customTextName" placeholder="例如：论语"></div>
+    <div class="form-row"><label>句子</label><input type="text" id="customTextSentence" placeholder="例如：学而时习之，不亦说乎？"></div>
     <div id="customTargetsContainer">
      <div class="custom-target-group">
-      <div class="target-row">
-       <input type="text" class="custom-target-word" placeholder="重点词（如：而）" />
-       <input type="text" class="custom-target-answer" placeholder="释义（如：表示承接）" />
-       <button class="del-target-btn" style="display:none;">✕</button>
-      </div>
+      <div class="target-row"><input type="text" class="custom-target-word" placeholder="重点词（如：而）"><input type="text" class="custom-target-answer" placeholder="释义（如：表示承接）"><button class="del-target-btn" style="display:none;">✕</button></div>
      </div>
     </div>
-    <div class="form-actions">
-     <button class="add-target-btn" id="addTargetBtn">+ 添加重点词</button>
-     <button class="btn btn-accent" id="customTextAdd">添加课文</button>
-    </div>
+    <div class="form-actions"><button class="add-target-btn" id="addTargetBtn">+ 添加重点词</button><button class="btn btn-accent" id="customTextAdd">添加课文</button></div>
    </div>
    <div class="custom-form">
     <h3 style="font-size:1.05rem;margin-bottom:12px;">🔤 添加一词多义</h3>
-    <div class="form-row">
-     <label>字词</label>
-     <input type="text" id="customPolyChar" placeholder="例如：之" />
+    <div class="form-row"><label>字词</label><input type="text" id="customPolyChar" placeholder="例如：之"></div>
+    <div class="form-row"><label>义项</label><input type="text" id="customPolyMeaning" placeholder="例如：助词，的"></div>
+    <div class="form-row"><label>例句</label><input type="text" id="customPolyExample" placeholder="例如：壬戌之秋，七月既望。"></div>
+    <div class="form-row"><label>出处（可选）</label>
+     <div style="display:flex;flex-wrap:wrap;gap:8px;flex:1;"><input type="text" id="customPolyBook" placeholder="书名" style="flex:1;min-width:100px;"><input type="text" id="customPolyTitle" placeholder="篇名" style="flex:1;min-width:80px;"><input type="text" id="customPolyAuthor" placeholder="作者" style="flex:1;min-width:80px;"></div>
     </div>
-    <div class="form-row">
-     <label>义项</label>
-     <input type="text" id="customPolyMeaning" placeholder="例如：助词，的" />
-    </div>
-    <div class="form-row">
-     <label>例句</label>
-     <input type="text" id="customPolyExample" placeholder="例如：壬戌之秋，七月既望。" />
-    </div>
-    <div class="form-row">
-     <label>出处（可选）</label>
-     <div style="display:flex;flex-wrap:wrap;gap:8px;flex:1;">
-      <input type="text" id="customPolyBook" placeholder="书名" style="flex:1;min-width:100px;" />
-      <input type="text" id="customPolyTitle" placeholder="篇名" style="flex:1;min-width:80px;" />
-      <input type="text" id="customPolyAuthor" placeholder="作者" style="flex:1;min-width:80px;" />
-     </div>
-    </div>
-    <div class="form-actions">
-     <button class="btn btn-accent" id="customPolyAdd">添加一词多义</button>
-    </div>
+    <div class="form-actions"><button class="btn btn-accent" id="customPolyAdd">添加一词多义</button></div>
    </div>
    <h3 style="font-size:1.05rem;margin-top:20px;">📚 已添加的自定义内容</h3>
    <div id="customListContainer">
     <div class="custom-list" id="customList"></div>
    </div>
-   <div class="btn-group" style="margin-top:12px;">
-    <button class="btn btn-danger" id="customClearAll">清空所有自定义</button>
-   </div>
+   <div class="btn-group" style="margin-top:12px;"><button class="btn btn-danger" id="customClearAll">清空所有自定义</button></div>
   </div>
-
  </div>
  <script src="data/text-data.js"></script>
  <script src="data/poly-data.js"></script>
-
  <script>
   // ================================================================
   //  完整数据
@@ -943,15 +931,17 @@
   };
   
   function loadSettings() {
-    try {
-        const raw = localStorage.getItem(SETTINGS_KEY);
-        if (!raw) return { theme: 'default', fontSize: 'medium' };
-        const parsed = JSON.parse(raw);
-        if (!parsed || typeof parsed !== 'object') return { theme: 'default', fontSize: 'medium' };
-        if (!parsed.theme) parsed.theme = 'default';
-        if (!parsed.fontSize) parsed.fontSize = 'medium';
-        return parsed;
-    } catch { return { theme: 'default', fontSize: 'medium' }; }
+  try {
+      const raw = localStorage.getItem(SETTINGS_KEY);
+      const dft = { theme: 'default', fontSize: 'medium', sound: true };
+      if (!raw) return dft;
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object') return dft;
+      if (!parsed.theme) parsed.theme = 'default';
+      if (!parsed.fontSize) parsed.fontSize = 'medium';
+      if (typeof parsed.sound !== 'boolean') parsed.sound = true;
+      return parsed;
+  } catch { return { theme: 'default', fontSize: 'medium', sound: true }; }
   }
   function saveSettings(settings) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
   function applySettings(settings) {
@@ -960,6 +950,7 @@
       const root = document.documentElement;
       Object.entries(theme).forEach(([key, val]) => root.style.setProperty(key, val));
       Object.entries(font).forEach(([key, val]) => root.style.setProperty(key, val));
+      root.setAttribute('data-theme', settings.theme);
       document.querySelectorAll('.color-btn').forEach(btn => {
           btn.classList.toggle('active', btn.dataset.theme === settings.theme);
       });
@@ -1009,12 +1000,12 @@
   //  状态管理
   // ================================================================
   const state = {
-      page: 'home',
-      text: { selectedText: null, mode: null, questions: [], currentIndex: 0, answered: false, totalCorrect: 0,
-          totalWrong: 0 },
-      poly: { selectedChars: [], mode: null, questions: [], currentIndex: 0, answered: false, totalCorrect: 0,
-          totalWrong: 0 },
-      reviewFav: { questions: [], currentIndex: 0, answered: false, totalCorrect: 0, totalWrong: 0, mode: 'choice' }
+    page: 'home',
+    text: { selectedText: null, mode: null, questions: [], currentIndex: 0, answered: false, totalCorrect: 0,
+        totalWrong: 0, results: [] },
+    poly: { selectedChars: [], mode: null, questions: [], currentIndex: 0, answered: false, totalCorrect: 0,
+        totalWrong: 0, results: [] },
+    reviewFav: { questions: [], currentIndex: 0, answered: false, totalCorrect: 0, totalWrong: 0, mode: 'choice', results: [] }
   };
   
   // ================================================================
@@ -1208,10 +1199,11 @@
       
       document.getElementById('textStarToggle').parentElement.style.display = '';
       state.text.questions = shuffle(questions);
-      state.text.currentIndex = 0;
-      state.text.answered = false;
-      state.text.totalCorrect = 0;
-      state.text.totalWrong = 0;
+  state.text.currentIndex = 0;
+  state.text.answered = false;
+  state.text.totalCorrect = 0;
+  state.text.totalWrong = 0;
+  state.text.results = [];
       document.getElementById('text-list').style.display = 'none';
       document.getElementById('text-quiz').style.display = 'block';
       document.getElementById('textQuizTitle').textContent = '《' + textName + '》';
@@ -1299,8 +1291,22 @@
           if (btn.dataset.value === selected && !isCorrect) btn.classList.add('wrong');
       });
       updateLearning('text', { sentenceId: q.sentenceId, word: q.word }, isCorrect);
+      
+      state.text.results.push({
+    isCorrect: isCorrect,
+    text: q.text,
+    word: q.word,
+    questionId: getQuestionId('text', { sentenceId: q.sentenceId, word: q.word }),
+    module: 'text',
+    favQuestion: q.text,
+    favAnswer: q.answer,
+    favType: 'text',
+    favExtra: { textName: q.textName, word: q.word }
+  });
+      
       // 不记录错题
       const fb = document.getElementById('textFeedback');
+      playSound(isCorrect ? 'correct' : 'wrong');
       if (isCorrect) {
           state.text.totalCorrect++;
           fb.className = 'feedback show success';
@@ -1338,15 +1344,33 @@
                   <button class="btn btn-outline" id="textFinishBtn">完成</button>
               `;
       document.getElementById('textSelfCorrect').addEventListener('click', function() {
-          state.text.totalCorrect++;
-          updateLearning('text', { sentenceId: q.sentenceId, word: q.word }, true);
-          goToTextNext();
-      });
-      document.getElementById('textSelfWrong').addEventListener('click', function() {
-          state.text.totalWrong++;
-          updateLearning('text', { sentenceId: q.sentenceId, word: q.word }, false);
-          goToTextNext();
-      });
+    playSound('correct');
+    state.text.totalCorrect++;
+    updateLearning('text', { sentenceId: q.sentenceId, word: q.word }, true);
+    state.text.results.push({
+        isCorrect: true,
+        text: q.text, word: q.word,
+        questionId: getQuestionId('text', { sentenceId: q.sentenceId, word: q.word }),
+        module: 'text',
+        favQuestion: q.text, favAnswer: q.answer, favType: 'text',
+        favExtra: { textName: q.textName, word: q.word }
+    });
+    goToTextNext();
+});
+document.getElementById('textSelfWrong').addEventListener('click', function() {
+    playSound('wrong');
+    state.text.totalWrong++;
+    updateLearning('text', { sentenceId: q.sentenceId, word: q.word }, false);
+    state.text.results.push({
+        isCorrect: false,
+        text: q.text, word: q.word,
+        questionId: getQuestionId('text', { sentenceId: q.sentenceId, word: q.word }),
+        module: 'text',
+        favQuestion: q.text, favAnswer: q.answer, favType: 'text',
+        favExtra: { textName: q.textName, word: q.word }
+    });
+    goToTextNext();
+});
       document.getElementById('textFinishBtn').addEventListener('click', finishTextQuiz);
   });
   
@@ -1359,14 +1383,13 @@
   document.getElementById('textFinishBtn').addEventListener('click', finishTextQuiz);
   
   function finishTextQuiz() {
-      const total = state.text.questions.length;
-      const correct = state.text.totalCorrect;
-      const wrong = state.text.totalWrong;
-      alert('🎉 答题完成！\n正确：' + correct + ' 题\n错误：' + wrong + ' 题\n' + (correct / total * 100).toFixed(0) + '% 正确率');
-      document.getElementById('text-quiz').style.display = 'none';
-      document.getElementById('text-list').style.display = 'block';
-      renderTextList();
-  }
+    const title = '《' + (state.text.selectedText || '') + '》';
+    const results = state.text.results.slice();
+    document.getElementById('text-quiz').style.display = 'none';
+    document.getElementById('text-list').style.display = 'block';
+    renderTextList();
+    showAnswerSheet(title, results);
+}
   
   // ================================================================
   //  一词多义模块
@@ -1782,10 +1805,11 @@
       
       document.getElementById('polyStarToggle').parentElement.style.display = '';
       state.poly.questions = shuffle(questions);
-      state.poly.currentIndex = 0;
-      state.poly.answered = false;
-      state.poly.totalCorrect = 0;
-      state.poly.totalWrong = 0;
+  state.poly.currentIndex = 0;
+  state.poly.answered = false;
+  state.poly.totalCorrect = 0;
+  state.poly.totalWrong = 0;
+  state.poly.results = [];
       document.getElementById('poly-list').style.display = 'none';
       document.getElementById('poly-quiz').style.display = 'block';
       document.getElementById('polyQuizTitle').textContent = '一词多义 · 共 ' + state.poly.questions.length + ' 题';
@@ -1869,6 +1893,20 @@
           if (btn.dataset.value === selected && !isCorrect) btn.classList.add('wrong');
       });
       updateLearning('poly', { char: q.char, meaning: q.meaning }, isCorrect);
+      
+      state.poly.results.push({
+    isCorrect: isCorrect,
+    text: q.example,
+    word: q.char,
+    questionId: getQuestionId('poly', { char: q.char, meaning: q.meaning }),
+    module: 'poly',
+    favQuestion: q.example,
+    favAnswer: q.meaning,
+    favType: 'poly',
+    favExtra: { char: q.char }
+  });
+      
+      playSound(isCorrect ? 'correct' : 'wrong');
       const fb = document.getElementById('polyFeedback');
       if (isCorrect) {
           state.poly.totalCorrect++;
@@ -1907,18 +1945,34 @@
                   <button class="btn btn-outline" id="polyFinishBtn">完成</button>
               `;
       document.getElementById('polySelfCorrect').addEventListener('click', function() {
-          state.poly.totalCorrect++;
-          updateLearning('poly', { char: q.char, meaning: q.meaning }, true);
-          goToPolyNext();
-      });
-      document.getElementById('polySelfWrong').addEventListener('click', function() {
-          state.poly.totalWrong++;
-          updateLearning('poly', { char: q.char, meaning: q.meaning }, false);
-          goToPolyNext();
-      });
-      document.getElementById('polyFinishBtn').addEventListener('click', finishPolyQuiz);
+    playSound('correct');
+    state.poly.totalCorrect++;
+    updateLearning('poly', { char: q.char, meaning: q.meaning }, true);
+    state.poly.results.push({
+        isCorrect: true,
+        text: q.example, word: q.char,
+        questionId: getQuestionId('poly', { char: q.char, meaning: q.meaning }),
+        module: 'poly',
+        favQuestion: q.example, favAnswer: q.meaning, favType: 'poly',
+        favExtra: { char: q.char }
+    });
+    goToPolyNext();
+});
+document.getElementById('polySelfWrong').addEventListener('click', function() {
+    playSound('wrong');
+    state.poly.totalWrong++;
+    updateLearning('poly', { char: q.char, meaning: q.meaning }, false);
+    state.poly.results.push({
+        isCorrect: false,
+        text: q.example, word: q.char,
+        questionId: getQuestionId('poly', { char: q.char, meaning: q.meaning }),
+        module: 'poly',
+        favQuestion: q.example, favAnswer: q.meaning, favType: 'poly',
+        favExtra: { char: q.char }
+    });
+        goToPolyNext();
+});
   });
-  
   function goToPolyNext() {
       state.poly.currentIndex++;
       if (state.poly.currentIndex >= state.poly.questions.length) finishPolyQuiz();
@@ -1928,14 +1982,12 @@
   document.getElementById('polyFinishBtn').addEventListener('click', finishPolyQuiz);
   
   function finishPolyQuiz() {
-      const total = state.poly.questions.length;
-      const correct = state.poly.totalCorrect;
-      const wrong = state.poly.totalWrong;
-      alert('🎉 答题完成！\n正确：' + correct + ' 题\n错误：' + wrong + ' 题\n' + (correct / total * 100).toFixed(0) + '% 正确率');
-      document.getElementById('poly-quiz').style.display = 'none';
-      document.getElementById('poly-list').style.display = 'block';
-      renderPolyList();
-  }
+    const results = state.poly.results.slice();
+    document.getElementById('poly-quiz').style.display = 'none';
+    document.getElementById('poly-list').style.display = 'block';
+    renderPolyList();
+    showAnswerSheet('一词多义', results);
+}
   
   // ================================================================
   //  我的收藏页面
@@ -2156,10 +2208,11 @@
           extra: f.extra || {}
       }));
       state.reviewFav.questions = shuffle(questions);
-      state.reviewFav.currentIndex = 0;
-      state.reviewFav.answered = false;
-      state.reviewFav.totalCorrect = 0;
-      state.reviewFav.totalWrong = 0;
+  state.reviewFav.currentIndex = 0;
+  state.reviewFav.answered = false;
+  state.reviewFav.totalCorrect = 0;
+  state.reviewFav.totalWrong = 0;
+  state.reviewFav.results = [];
       document.getElementById('reviewFavList').style.display = 'none';
       document.getElementById('reviewFavQuiz').style.display = 'block';
       const mode = state.reviewFav.mode || 'choice';
@@ -2246,16 +2299,40 @@
                 <button class="btn btn-danger" id="reviewFavSelfWrong">❌ 错误，下一题</button>
                 <button class="btn btn-outline" id="reviewFavFinishBtn">完成</button>
             `;
-            document.getElementById('reviewFavSelfCorrect').addEventListener('click', function() {
-                updateCredit(q.questionId, 1);
-                state.reviewFav.totalCorrect++;
-                goToReviewFavNext();
-            });
-            document.getElementById('reviewFavSelfWrong').addEventListener('click', function() {
-                updateCredit(q.questionId, -1);
-                state.reviewFav.totalWrong++;
-                goToReviewFavNext();
-            });
+document.getElementById('reviewFavSelfCorrect').addEventListener('click', function() {
+    playSound('correct');
+    updateCredit(q.questionId, 1);
+    state.reviewFav.totalCorrect++;
+    state.reviewFav.results.push({
+        isCorrect: true,
+        text: q.question,
+        word: (q.extra && (q.extra.word || q.extra.char)) || '',
+        questionId: q.questionId,
+        module: q.module,
+        favQuestion: q.question,
+        favAnswer: q.answer,
+        favType: q.type || q.module,
+        favExtra: q.extra || {}
+    });
+    goToReviewFavNext();
+});
+document.getElementById('reviewFavSelfWrong').addEventListener('click', function() {
+    playSound('wrong');
+    updateCredit(q.questionId, -1);
+    state.reviewFav.totalWrong++;
+    state.reviewFav.results.push({
+        isCorrect: false,
+        text: q.question,
+        word: (q.extra && (q.extra.word || q.extra.char)) || '',
+        questionId: q.questionId,
+        module: q.module,
+        favQuestion: q.question,
+        favAnswer: q.answer,
+        favType: q.type || q.module,
+        favExtra: q.extra || {}
+    });
+    goToReviewFavNext();
+});
             document.getElementById('reviewFavFinishBtn').addEventListener('click', finishReviewFavQuiz);
         };
     } else {
@@ -2295,6 +2372,20 @@
           if (btn.dataset.value === q.answer) btn.classList.add('correct');
           if (btn.dataset.value === selected && !isCorrect) btn.classList.add('wrong');
       });
+      
+      playSound(isCorrect ? 'correct' : 'wrong');
+      
+      state.reviewFav.results.push({
+    isCorrect: isCorrect,
+    text: q.question,
+    word: (q.extra && (q.extra.word || q.extra.char)) || '',
+    questionId: q.questionId,
+    module: q.module,
+    favQuestion: q.question,
+    favAnswer: q.answer,
+    favType: q.type || q.module,
+    favExtra: q.extra || {}
+});
       const delta = isCorrect ? 1 : -1;
       const updated = updateCredit(q.questionId, delta);
       const fb = document.getElementById('reviewFavFeedback');
@@ -2327,15 +2418,13 @@
   }
   
   function finishReviewFavQuiz() {
-      const total = state.reviewFav.questions.length;
-      const correct = state.reviewFav.totalCorrect;
-      const wrong = state.reviewFav.totalWrong;
-      alert('🎉 刷题完成！\n正确：' + correct + ' 题\n错误：' + wrong + ' 题\n' + (correct / total * 100).toFixed(0) + '% 正确率');
-      document.getElementById('reviewFavQuiz').style.display = 'none';
-      document.getElementById('reviewFavList').style.display = 'block';
-      renderReviewFavList();
-      updateHomeBadges();
-  }
+    const results = state.reviewFav.results.slice();
+    document.getElementById('reviewFavQuiz').style.display = 'none';
+    document.getElementById('reviewFavList').style.display = 'block';
+    renderReviewFavList();
+    updateHomeBadges();
+    showAnswerSheet('刷收藏题', results);
+}
   
   // ================================================================
   //  自定义笔记
@@ -2516,6 +2605,7 @@
       document.querySelectorAll('.font-btn').forEach(btn => {
           btn.classList.toggle('active', btn.dataset.size === currentSettings.fontSize);
       });
+      refreshSoundBtn();
   }
   
   function closeSettings() { settingsOverlay.classList.remove('open'); }
@@ -2544,6 +2634,73 @@
       closeSettings();
   });
   applySettings(currentSettings);
+  
+  // ================================================================
+  //  音效引擎（Web Audio API 生成，不需要音频文件）
+  // ================================================================
+  let _audioCtx = null;
+  function _getAudioCtx() {
+    try {
+        if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (_audioCtx.state === 'suspended') _audioCtx.resume();
+        return _audioCtx;
+    } catch (e) { return null; }
+  }
+  function _playTone(freq, duration, type, volume, delay) {
+    const ctx = _getAudioCtx();
+    if (!ctx) return;
+    const t = ctx.currentTime + (delay || 0);
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.setValueAtTime(freq, t);
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(volume || 0.15, t + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + duration + 0.02);
+  }
+  function playSound(type) {
+    if (typeof currentSettings === 'undefined') return;
+    if (currentSettings.sound === false) return;
+    if (type === 'click') {
+        _playTone(880, 0.05, 'sine', 0.08, 0);
+    } else if (type === 'correct') {
+        _playTone(659.25, 0.15, 'sine', 0.16, 0);
+        _playTone(880, 0.25, 'sine', 0.16, 0.12);
+    } else if (type === 'wrong') {
+        _playTone(392, 0.18, 'triangle', 0.14, 0);
+        _playTone(261.63, 0.3, 'triangle', 0.14, 0.12);
+    }
+  }
+  
+  // 全局点击音效
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('button, .home-card, .list-item, .check-item, .mode-btn, .option-btn');
+    if (!btn) return;
+    // 音效开关自己不要再响一遍
+    if (btn.classList.contains('sound-btn')) return;
+    playSound('click');
+  }, true);
+  
+  // // 音效开关绑定（圆角胶囊）
+  const soundToggleEl = document.getElementById('soundToggle');
+  function refreshSoundBtn() {
+    if (!soundToggleEl) return;
+    const isOn = currentSettings.sound !== false;
+    soundToggleEl.classList.toggle('on', isOn);
+    soundToggleEl.textContent = isOn ? '🔊 开启' : '🔇 关闭';
+  }
+  if (soundToggleEl) {
+    soundToggleEl.addEventListener('click', function() {
+        currentSettings.sound = !(currentSettings.sound !== false);
+        refreshSoundBtn();
+        // 切换后给一声反馈（关闭时 playSound 会自动静音）
+        playSound('click');
+    });
+  }
   
   // ================================================================
   
@@ -2767,14 +2924,216 @@
   
   // ===============================================================
   
-  
+  // ================================================================
+//  答题卡
+// ================================================================
+function showAnswerSheet(title, results) {
+    if (!results || results.length === 0) return;
+    const total = results.length;
+    const correctCount = results.filter(r => r.isCorrect).length;
+    const wrongCount = total - correctCount;
+    const rate = total > 0 ? Math.round(correctCount / total * 100) : 0;
+
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+
+    const panel = document.createElement('div');
+    panel.style.cssText = 'background:var(--card);border-radius:16px;padding:22px 24px;max-width:660px;width:100%;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);';
+
+    const header = document.createElement('div');
+    header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid var(--bg);';
+    header.innerHTML = '<h3 style="margin:0;font-size:1.15rem;color:var(--primary);font-weight:700;">📋 答题卡 · ' + title + '</h3>' +
+        '<button class="sheet-close" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text-light);padding:0 6px;line-height:1;">✕</button>';
+
+    const stats = document.createElement('div');
+    stats.style.cssText = 'display:flex;gap:10px;margin-bottom:14px;';
+    stats.innerHTML = '<div style="flex:1;text-align:center;padding:12px 6px;background:var(--bg);border-radius:10px;">' +
+        '<div style="font-size:1.5rem;font-weight:700;color:#27ae60;">' + correctCount + '</div>' +
+        '<div style="font-size:0.75rem;color:var(--text-light);margin-top:2px;">正确</div></div>' +
+        '<div style="flex:1;text-align:center;padding:12px 6px;background:var(--bg);border-radius:10px;">' +
+        '<div style="font-size:1.5rem;font-weight:700;color:#e74c3c;">' + wrongCount + '</div>' +
+        '<div style="font-size:0.75rem;color:var(--text-light);margin-top:2px;">错误</div></div>' +
+        '<div style="flex:1;text-align:center;padding:12px 6px;background:var(--bg);border-radius:10px;">' +
+        '<div style="font-size:1.5rem;font-weight:700;color:var(--accent);">' + rate + '%</div>' +
+        '<div style="font-size:0.75rem;color:var(--text-light);margin-top:2px;">正确率</div></div>';
+
+    const list = document.createElement('div');
+    list.style.cssText = 'flex:1;overflow-y:auto;padding-right:6px;min-height:100px;';
+
+    results.forEach(function(r, idx) {
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border-radius:10px;margin-bottom:8px;';
+
+        const dot = document.createElement('span');
+        dot.style.cssText = 'width:11px;height:11px;border-radius:50%;flex-shrink:0;background:' +
+            (r.isCorrect ? '#27ae60' : '#e74c3c') +
+            ';box-shadow:0 0 0 3px ' + (r.isCorrect ? 'rgba(39,174,96,0.25)' : 'rgba(231,76,60,0.25)') + ';';
+
+        const textDiv = document.createElement('div');
+        textDiv.style.cssText = 'flex:1;font-size:0.9rem;line-height:1.55;min-width:0;word-break:break-word;';
+        let hl = r.text || '';
+        if (r.word) {
+            try {
+                const safeWord = r.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                hl = hl.replace(new RegExp(safeWord, 'g'), '<span class="highlight">' + r.word + '</span>');
+            } catch (e) {}
+        }
+        textDiv.innerHTML = '<span style="color:var(--text-light);margin-right:6px;font-weight:500;">' + (idx + 1) + '.</span>' + hl;
+
+        const starBtn = document.createElement('button');
+        const favored = isFavorited(r.questionId);
+        starBtn.textContent = favored ? '★' : '☆';
+        starBtn.style.cssText = 'background:none;border:none;font-size:1.5rem;cursor:pointer;flex-shrink:0;padding:0 4px;line-height:1;transition:transform 0.2s;color:' + (favored ? '#f1c40f' : '#ccc') + ';';
+        starBtn.addEventListener('click', function() {
+            const fav = toggleFavorite(r.questionId, r.module, r.favQuestion, r.favAnswer, r.favType, r.favExtra);
+            this.textContent = fav ? '★' : '☆';
+            this.style.color = fav ? '#f1c40f' : '#ccc';
+            updateHomeBadges();
+        });
+        starBtn.addEventListener('mouseenter', function() { this.style.transform = 'scale(1.2)'; });
+        starBtn.addEventListener('mouseleave', function() { this.style.transform = 'scale(1)'; });
+
+        row.appendChild(dot);
+        row.appendChild(textDiv);
+        row.appendChild(starBtn);
+        list.appendChild(row);
+    });
+
+    const footer = document.createElement('div');
+    footer.style.cssText = 'display:flex;gap:10px;margin-top:14px;padding-top:14px;border-top:2px solid var(--bg);';
+    footer.innerHTML = '<button class="sheet-back" style="flex:1;padding:12px;border:none;border-radius:10px;background:var(--primary);color:#fff;font-weight:600;cursor:pointer;font-size:0.95rem;">完成</button>';
+
+    panel.appendChild(header);
+    panel.appendChild(stats);
+    panel.appendChild(list);
+    panel.appendChild(footer);
+    overlay.appendChild(panel);
+    document.body.appendChild(overlay);
+
+    function closeFn() { document.body.removeChild(overlay); }
+    header.querySelector('.sheet-close').addEventListener('click', closeFn);
+    footer.querySelector('.sheet-back').addEventListener('click', closeFn);
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) closeFn(); });
+}
+// ================================================================
+//  首页随机古语
+// ================================================================
+const HOME_QUOTES = [
+      // ===== 中国古典 =====
+      { text: '学而时习之，不亦说乎？', from: '《论语·学而》' },
+      { text: '知之者不如好之者，好之者不如乐之者。', from: '《论语·雍也》' },
+      { text: '三人行，必有我师焉。', from: '《论语·述而》' },
+      { text: '学而不思则罔，思而不学则殆。', from: '《论语·为政》' },
+      { text: '岁寒，然后知松柏之后凋也。', from: '《论语·子罕》' },
+      { text: '不积跬步，无以至千里；不积小流，无以成江海。', from: '《劝学》', author: '荀子' },
+      { text: '锲而舍之，朽木不折；锲而不舍，金石可镂。', from: '《劝学》', author: '荀子' },
+      { text: '青，取之于蓝，而青于蓝。', from: '《劝学》', author: '荀子' },
+      { text: '不登高山，不知天之高也；不临深溪，不知地之厚也。', from: '《劝学》', author: '荀子' },
+      { text: '千里之行，始于足下。', from: '《老子》', author: '老子' },
+      { text: '知人者智，自知者明。', from: '《老子》', author: '老子' },
+      { text: '合抱之木，生于毫末；九层之台，起于累土。', from: '《老子》', author: '老子' },
+      { text: '古之学者必有师。师者，所以传道受业解惑也。', from: '《师说》', author: '韩愈' },
+      { text: '闻道有先后，术业有专攻。', from: '《师说》', author: '韩愈' },
+      { text: '圣人无常师。', from: '《师说》', author: '韩愈' },
+      { text: '业精于勤，荒于嬉；行成于思，毁于随。', from: '《进学解》', author: '韩愈' },
+      { text: '静以修身，俭以养德。', from: '《诫子书》', author: '诸葛亮' },
+      { text: '非学无以广才，非志无以成学。', from: '《诫子书》', author: '诸葛亮' },
+      { text: '路漫漫其修远兮，吾将上下而求索。', from: '《离骚》', author: '屈原' },
+      { text: '海内存知己，天涯若比邻。', from: '《送杜少府之任蜀州》', author: '王勃' },
+      { text: '穷且益坚，不坠青云之志。', from: '《滕王阁序》', author: '王勃' },
+      { text: '仰天大笑出门去，我辈岂是蓬蒿人。', from: '《南陵别儿童入京》', author: '李白' },
+      { text: '长风破浪会有时，直挂云帆济沧海。', from: '《行路难》', author: '李白' },
+      { text: '会当凌绝顶，一览众山小。', from: '《望岳》', author: '杜甫' },
+      { text: '沉舟侧畔千帆过，病树前头万木春。', from: '《酬乐天扬州初逢席上见赠》', author: '刘禹锡' },
+      { text: '生当作人杰，死亦为鬼雄。', from: '《夏日绝句》', author: '李清照' },
+      { text: '博观而约取，厚积而薄发。', from: '《稼说送张琥》', author: '苏轼' },
+      { text: '玉不琢，不成器；人不学，不知道。', from: '《礼记·学记》' },
+      { text: '博学之，审问之，慎思之，明辨之，笃行之。', from: '《礼记·中庸》' },
+      { text: '读书百遍，其义自见。', from: '《三国志》', author: '陈寿' },
+      { text: '先天下之忧而忧，后天下之乐而乐。', from: '《岳阳楼记》', author: '范仲淹' },
+      { text: '千磨万击还坚劲，任尔东西南北风。', from: '《竹石》', author: '郑燮' },
+      // ===== 外国经典 =====
+      { text: '未经省察的人生不值得过。', author: '苏格拉底' },
+      { text: '认识你自己。', author: '苏格拉底' },
+      { text: '吾爱吾师，吾更爱真理。', author: '亚里士多德' },
+      { text: '知识就是力量。', author: '培根' },
+      { text: '我思故我在。', author: '笛卡尔' },
+      { text: '人是万物的尺度。', author: '普罗泰戈拉' },
+      { text: '凡不能摧毁我的，必将使我更强大。', author: '尼采' },
+      { text: '每一个不曾起舞的日子，都是对生命的辜负。', author: '尼采' },
+      { text: '生存还是毁灭，这是个问题。', from: '《哈姆雷特》', author: '莎士比亚' },
+      { text: '凡是过往，皆为序章。', from: '《暴风雨》', author: '莎士比亚' },
+      { text: '走自己的路，让别人去说吧。', from: '《神曲》', author: '但丁' },
+      { text: '生如夏花之绚烂，死如秋叶之静美。', from: '《飞鸟集》', author: '泰戈尔' },
+      { text: '世界以痛吻我，要我报之以歌。', from: '《飞鸟集》', author: '泰戈尔' },
+      { text: '世界上只有一种真正的英雄主义，那就是在认清生活真相之后依然热爱生活。', from: '《米开朗基罗传》', author: '罗曼·罗兰' },
+      { text: '在冬天的深处，我终于明白，我的心里有一个不可战胜的夏天。', author: '加缪' },
+      { text: '一个人可以被毁灭，但不能被打败。', from: '《老人与海》', author: '海明威' },
+      { text: '假如生活欺骗了你，不要悲伤，不要心急。', from: '《假如生活欺骗了你》', author: '普希金' },
+      { text: '生命诚可贵，爱情价更高。若为自由故，二者皆可抛。', from: '《自由与爱情》', author: '裴多菲' },
+      { text: '世界上最宽阔的是海洋，比海洋更宽阔的是天空，比天空更宽阔的是人的胸怀。', from: '《悲惨世界》', author: '雨果' },
+      { text: '生活中不是缺少美，而是缺少发现美的眼睛。', author: '罗丹' },
+      { text: '如果说我看得比别人更远些，那是因为我站在巨人的肩膀上。', author: '牛顿' },
+      { text: '想象力比知识更重要。', author: '爱因斯坦' },
+      { text: '让暴风雨来得更猛烈些吧！', from: '《海燕》', author: '高尔基' },
+      { text: '把时间用在思考上，是最能节省时间的事情。', author: '卡曾斯' },
+      { text: '所谓自由，不是随心所欲，而是自我主宰。', author: '康德' },
+      { text: '书是人类进步的阶梯。', from: '《童年》', author: '高尔基' },
+      { text: '时间是构成我的实体。时间是带走我的河流，但我即是河流。', author: '博尔赫斯' },
+      { text: '我们都在阴沟里，但仍有人仰望星空。', from: '《温德米尔夫人的扇子》', author: '王尔德' },
+      { text: '爱自己是终身浪漫的开始。', author: '王尔德' },
+      { text: '一个人生命中的最大幸运，莫过于在他年富力强时发现了自己的使命。', from: '《人类群星闪耀时》', author: '茨威格' },
+      { text: '真正的发现之旅不在于寻找新风景，而在于拥有新眼光。', author: '普鲁斯特' },
+      { text: "最要紧的是，我们首先应该善良，其次要诚实，再其次是以后永远不要互相遗忘。", from: "《卡拉马佐夫兄弟》", author: "陀思妥耶夫斯基" },
+      { text: '要爱具体的人，不要爱抽象的人。', from: '《卡拉马佐夫兄弟》', author: '陀思妥耶夫斯基' },
+      { text: '这个世界如此美好，值得人们为它奋斗。', from: '《丧钟为谁而鸣》', author: '海明威' },
+      { text: '多年以后，面对行刑队，奥雷里亚诺·布恩迪亚上校将会回想起父亲带他去见识冰块的那个遥远的下午。', from: '《百年孤独》', author: '马尔克斯' },
+      { text: '我们所需要的书，应该是一把能劈开我们心中冰海的利斧。', author: '卡夫卡' },
+      { text: '冬天来了，春天还会远吗？', from: '《西风颂》', author: '雪莱' },
+      { text: '若我会见到你，事隔经年，我如何贺你？以眼泪，以沉默。', from: '《春逝》', author: '拜伦' },
+      { text: '我的语言的界限意味着我的世界的界限。', from: '《逻辑哲学论》', author: '维特根斯坦' },
+      { text: '人生而自由，却无往不在枷锁之中。', from: '《社会契约论》', author: '卢梭' },
+      { text: '我知道什么呢？', author: '蒙田' },
+      { text: '生活只能倒着被理解，但必须正着被经历。', author: '克尔凯郭尔' },
+      { text: '他人即地狱。', from: '《禁闭》', author: '萨特' },
+      { text: '人是被判定为自由的。', author: '萨特' },
+      { text: '有两样东西，我思考得越是深沉和持久，它们在我心中唤起的惊奇和敬畏就越是与日俱增：头顶的星空和心中的道德律。', from: '《实践理性批判》', author: '康德' },
+      { text: '凡是现实的都是合乎理性的。', from: '《法哲学原理》', author: '黑格尔' },
+      { text: '人生如同钟摆，在痛苦和无聊之间摇摆。', from: '《作为意志和表象的世界》', author: '叔本华' },
+      { text: '人是一根会思想的芦苇。', from: '《思想录》', author: '帕斯卡' },
+      { text: '我们必须想象西西弗是幸福的。', from: '《西西弗神话》', author: '加缪' },
+      { text: '阅读是一座随身携带的避难所。', author: '毛姆' },
+      { text: '人的一切都应该是美丽的：面貌、衣裳、心灵、思想。', from: '《万尼亚舅舅》', author: '契诃夫' },
+      { text: '每个人的生命都是通向自我的征途。', from: '《德米安》', author: '黑塞' },
+      { text: '我孤独，但不是因为没有人陪伴，而是因为没有人能理解。', author: '黑塞' },
+      { text: '一个人能使自己成为自己，比什么都重要。', author: '伍尔夫' },
+      { text: '人最宝贵的东西是生命，生命属于人只有一次。', from: '《钢铁是怎样炼成的》', author: '奥斯特洛夫斯基' },
+      { text: '当你为错过太阳而哭泣的时候，你也要错过群星了。', from: '《飞鸟集》', author: '泰戈尔' }
+  ];
+function renderHomeQuote() {
+    const el = document.getElementById('homeQuote');
+    if (!el) return;
+    const q = HOME_QUOTES[Math.floor(Math.random() * HOME_QUOTES.length)];
+    let fromStr = q.from || '';
+    if (q.from && q.author) fromStr = q.from + ' ' + q.author;
+    else if (q.author) fromStr = q.author;
+    el.style.transition = 'opacity 0.5s';
+    el.style.opacity = '0';
+    setTimeout(function() {
+        el.innerHTML = '「' + q.text + '」<br><span style="font-size:0.75rem;opacity:0.75;font-style:normal;">—— ' + fromStr + '</span>';
+        el.style.opacity = '1';
+    }, 500);
+}
+setInterval(renderHomeQuote, 2700);
+
   
   //  初始化
   // ================================================================
   updateHomeBadges();
-  showPage('page-home');
-  console.log('📖 不背文言 完整版（含收藏与刷题）已启动');
+renderHomeQuote();
+showPage('page-home');
+  console.log('📖 不背文言');
  </script>
 </body>
 
-   </html>
+ </html>
